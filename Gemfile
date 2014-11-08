@@ -24,7 +24,7 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 
 group :development do
 	gem 'spring'
-	gem 'capistrano'
+	gem 'capistrano', '~> 3.1.0'
 end
 
 ##For whatsthediff

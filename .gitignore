@@ -20,3 +20,4 @@ server_config.txt
 
 # Ignore secrets
 /config/database.yml
+/config/application.yml
