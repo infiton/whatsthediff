@@ -25,6 +25,8 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 group :development do
 	gem 'spring'
 	gem 'capistrano', '~> 3.1.0'
+	gem 'capistrano-rails', '~> 1.1'
+	gem 'capistrano-bundler'
 end
 
 ##For whatsthediff
