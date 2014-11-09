@@ -1,0 +1,10 @@
+<div class="small-4 columns">
+  <h4><strong>Request someone share an email list</strong></h4>
+  <%= form_for :project, url: add_target_user_projects_path do |f| %>
+    <%= f.fields_for :user do |form| %>
+      <%= form.text_field :email %>
+    <%end%>
+    <%= f.hidden_field :id, value: @project.id %>
+    <%= f.submit %>
+  <% end %>
+</div>

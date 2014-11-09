@@ -1,0 +1,18 @@
+<%= form_for :project, url: projects_path do |f| %>
+
+
+  <%= f.fields_for :user do |form| %>
+
+    Email: <%= form.text_field :email %>
+    First Name: <%= form.text_field :first_name %>
+    Last Name: <%= form.text_field :last_name %>
+    Company: <%= form.text_field :company %>
+
+
+  <%end%>
+
+  <%= f.file_field :data_id %>
+  <%= f.submit %>
+
+
+<%end%>
