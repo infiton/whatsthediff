@@ -11,12 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141108230410) do
+ActiveRecord::Schema.define(version: 20141109190944) do
 
   create_table "projects", force: true do |t|
-    t.integer  "base_user_id"
+    t.integer  "user_id"
     t.integer  "target_user_id"
-    t.integer  "base_data_id"
+    t.integer  "data_id"
     t.integer  "target_data_id"
     t.string   "state"
     t.datetime "created_at"

@@ -13,8 +13,7 @@ class ProjectsController < ApplicationController
       redirect_to :back and return
     end
 
-    @project = Project.new(
-                 base_user_id: @user.id)
+    @project = @user.projects.build
 
     if @user.save && @project.save
       flash[:notice] = "Project Successfully Created"
@@ -30,7 +29,7 @@ class ProjectsController < ApplicationController
   def show
     @project = Project.find(params[:id])
 
-    @base_user = User.find(@project.base_user_id)
+    @user = @project.user
   end
 
   def add_target_user

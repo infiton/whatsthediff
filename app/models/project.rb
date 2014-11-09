@@ -2,7 +2,7 @@ class Project < ActiveRecord::Base
 
   #this relationship is necessary for nested_attributes, but not ideal
   belongs_to :user
-  accepts_nested_attributes_for :user
+  #accepts_nested_attributes_for :user
 
   def source_uploaded
     self.state = "Source Uploaded"
