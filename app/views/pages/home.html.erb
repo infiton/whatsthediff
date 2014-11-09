@@ -1,2 +1,37 @@
-<p>Yes we have a user <%= @user.first_name %> <%= @user.last_name %>: <%= @user.email %> </p>
-<p>This is cool!</p>
+<% content_for :title do "WhatsTheDiff | Home" end %>
+
+<div class="row">
+  <div class="small-12 columns">
+    <h1 class="text-center">WhatsTheDiff</h1>
+  </div>
+</div>
+
+<div class="row">
+  <div class="small-8 columns"> </div>
+  <div class="small-4 columns">
+    <% if @user.present? %>
+      <p>Welcome back <%= @user.full_name %>: <%= @user.email %> </p>
+    <%else%>
+      <p>Welcome new user!</p>
+    <%end%>
+  </div>
+</div>
+
+<div class="row">
+  <div class="small-12 columns">
+    <div class="panel">
+      <h3>Simple and Effective Email list sharing</h3>
+      <p> A bunch of sales copy and feature descriptions </p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="small-6 columns"></div>
+  <div class="small-6 columns">
+    <div class="panel">
+      <h4>Ready to Get Started?</h4>
+        <%= link_to "New Project", new_project_path, class: "button" %>
+    </div>
+  </div>
+</div>

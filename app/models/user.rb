@@ -3,4 +3,11 @@ class User < ActiveRecord::Base
   validates :email, presence: true, length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
+
+  has_many :projects
+
+  def full_name
+    "#{self.first_name} #{self.last_name}"
+  end
+
 end

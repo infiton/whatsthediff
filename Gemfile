@@ -15,19 +15,25 @@ gem 'coffee-rails', '~> 4.0.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-gem 'turbolinks'
+# gem 'turbolinks'  #Turbolinks is a pain in the buns
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
 group :development do
-	gem 'spring'
+	# gem 'spring'  #just for now, was causing some issues with installing foundation
 	gem 'capistrano', '~> 3.1.0'
 	gem 'capistrano-rails', '~> 1.1'
 	gem 'capistrano-bundler'
+        gem 'better_errors'
+        gem "binding_of_caller" #dependancy for better_errors
 end
 
 ##For whatsthediff
-gem "mysql2"
+gem 'mysql2'
+gem 'foundation-rails'
+gem 'awesome_print'

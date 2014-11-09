@@ -1,0 +1,24 @@
+<% content_for :title, "WhatsTheDiff | New Project" %>
+
+<h1 class="text-center">New Project</h1>
+
+<%if flash[:notice] %>
+  <div data-alert class="alert-box alert">
+    <%= flash[:notice] %>
+  </div>
+<%end%>
+
+<div class="row">
+  <div class="small-5 columns">
+    <h2>Get Started</h2>
+    <%= render "form" %>
+  </div>
+
+  <div class="small-2 columns"></div>
+
+  <div class="small-5 columns">
+    <h2>Your associates upload will go here</h2>
+    <%#= render "form" %>
+  </div>
+</div>
+
