@@ -1,8 +1,7 @@
 class Project < ActiveRecord::Base
 
-  #this relationship is necessary for nested_attributes, but not ideal
+  obfuscate_id :spin => 8675309
   belongs_to :user
-  #accepts_nested_attributes_for :user
 
   def source_uploaded
     self.state = "Source Uploaded"

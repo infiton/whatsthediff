@@ -37,3 +37,4 @@ end
 gem 'mysql2'
 gem 'foundation-rails'
 gem 'awesome_print'
+gem 'obfuscate_id', :git => 'https://github.com/namick/obfuscate_id.git'
