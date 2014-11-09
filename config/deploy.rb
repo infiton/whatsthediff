@@ -12,7 +12,7 @@ set :ssh_options, { :forward_agent => true }
 set :keep_releases, 5
 set :format, :pretty
 set :pty, true
-#set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 set :linked_files, %w{config/database.yml config/application.yml}
 
 set(:config_files, %w(
@@ -23,5 +23,6 @@ set(:config_files, %w(
 #some custom tasks coming from https://github.com/TalkingQuickly/capistrano-3-rails-template/blob/master/
 namespace :deploy do
   before :deploy, "deploy:check_revision"
+  before :deploy, 'deploy:setup_config'
   after 'deploy:publishing', 'deploy:restart' 
 end
