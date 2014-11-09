@@ -13,7 +13,7 @@ class ProjectsController < ApplicationController
       redirect_to :back and return
     end
 
-    @project = @user.projects.build
+    @project = @user.projects.build(state: :new)
 
     if @user.save && @project.save
       flash[:notice] = "Project Successfully Created"
