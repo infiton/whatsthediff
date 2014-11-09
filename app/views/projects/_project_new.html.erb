@@ -1,3 +1,14 @@
 <div class="row">
   <h4>Hi <%= @user.full_name %>, this a new project. Upload your file.</h4>
+  <p> We are going to do this with javascript </p>
 </div>
+<div id="dvImportSegments" class="fileupload ">  
+    <fieldset>
+        <legend>Upload your CSV File</legend>
+        	<%#https://cmatskas.com/importing-csv-files-using-jquery-and-html5/%>
+        	<%#http://www.w3.org/TR/html-markup/input.file.html%>
+            <input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
+   </fieldset>
+</div>
+<%#passing data to jQuery this way%>
+<%= content_tag :div, id: "upload", data: {url: upload_source_data_project_path(@project)} do%><% end %>

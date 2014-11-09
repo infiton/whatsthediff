@@ -33,8 +33,8 @@ class ProjectsController < ApplicationController
   end
 
   def add_target_user
-    @project = Project.find(params[:project][:id])
-    @target_user = User.where(email: params[:project][:user][:email]).first
+    @project = Project.find(params[:id])
+    @target_user = User.where(email: params[:user][:email]).first
     @target_user ||= create_user
 
     if @target_user.save
@@ -49,6 +49,10 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def upload_source_data
+    @project = Project.find(params[:id])
+    puts @project.inspect
+  end
 protected
 
   def create_user
