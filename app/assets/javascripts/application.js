@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require foundation
 //= require jquery.csv-0.71.min
+//= require md5
 //= require_tree .
 
 $(function(){ $(document).foundation(); });
