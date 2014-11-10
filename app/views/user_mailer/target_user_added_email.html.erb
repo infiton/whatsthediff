@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1><%= @user.first_name %> (<%= @user.email %>), has shared a project with you at whatsthediff.ca</h1>
+    <p>
+      You will only be able to access the project from the link:
+    </p>
+    <p>
+      <%= project_url(@project) %>
+    </p>
+  </body>
+</html>

@@ -33,14 +33,13 @@ class ProjectsController < ApplicationController
 
   def add_target_user
     @project = Project.find(params[:id])
-    @target_user = User.where(email: params[:user][:email]).first
+    @target_user = User.where(email: params[:project][:user][:email]).first
     @target_user ||= create_user
 
     if @target_user.save
-      #send email to target_user with link to 'projects/:project_id'
-      # redirect_to 'some congrats page or somefing'?
       flash[:notice] = "An Email request has been sent to #{@target_user.email}"
-      @project.target_uploaded
+      @project.add_target_user @target_user
+      UserMailer.target_user_added_email(@target_user, @project.user, @project).deliver
       redirect_to project_url(@project)
     else
       flash[:notice] = "Email couldn't be sent"

@@ -6,4 +6,11 @@ class UserMailer < ActionMailer::Base
   	@project = project
   	mail(to: @user.email, subject: "You started a new project")
   end
+
+  def target_user_added_email(target_user,user,project)
+  	@target_user = target_user
+  	@user = user
+  	@project = project
+  	mail(to: @target_user.email, subject: "Someone has shared a project with you")
+  end
 end
