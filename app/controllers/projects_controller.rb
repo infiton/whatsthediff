@@ -17,9 +17,8 @@ class ProjectsController < ApplicationController
 
     if @user.save && @project.save
       flash[:notice] = "Project Successfully Created"
+      UserMailer.new_project_email(@user,@project).deliver
       redirect_to project_url(@project)
-
-      #send email with link to  "/projects/:project_id"
     else
       flash[:notice] = "Project Could Not be created"
       redirect_to :back

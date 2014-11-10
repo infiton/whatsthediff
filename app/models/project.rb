@@ -4,7 +4,7 @@ class Project < ActiveRecord::Base
   belongs_to :user
 
   validates_presence_of :state, :in => [:new, :source_uploaded, :target_uploaded, :complete]
-
+  #need to remove data_id and target_data_id from schema
   def project_data
     ProjectData.where(project_id: self.id).first
   end
