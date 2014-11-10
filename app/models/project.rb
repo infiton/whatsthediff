@@ -9,6 +9,10 @@ class Project < ActiveRecord::Base
     ProjectData.where(project_id: self.id).first
   end
 
+  def target_user
+    User.where(id: self.target_user_id).first
+  end
+
   def source_uploaded
     self.state = :source_uploaded
     self.save
