@@ -13,11 +13,12 @@ set :keep_releases, 5
 set :format, :pretty
 set :pty, true
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
-set :linked_files, %w{config/database.yml config/application.yml}
+set :linked_files, %w{config/database.yml config/application.yml config/mongoid.yml}
 
 set(:config_files, %w(
   database.yml
   application.yml
+  mongoid.yml
 ))
 
 #some custom tasks coming from https://github.com/TalkingQuickly/capistrano-3-rails-template/blob/master/
