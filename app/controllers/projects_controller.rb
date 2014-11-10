@@ -29,6 +29,14 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
 
     @user = @project.user
+    #this will not exist until the state is brought here
+    #will be nil unless state >= target_user_added
+    @target_user = @project.target_user
+
+    if @project.project_data and @project.project_data.has_attribute?(:source_list)
+      @project_headers = @project.project_data.source_list.first.keys.select{|k| k!="uuid"}
+    end
+
   end
 
   def add_target_user
@@ -58,6 +66,27 @@ class ProjectsController < ApplicationController
       @project.source_uploaded
     else
       flash[:notice] = "Something went wrong uploading the source data"
+    end
+
+    respond_to do |format|
+      format.json { render :json => {:reload => project_url(@project) } }
+    end
+  end
+
+  def upload_target_data
+    @project = Project.find(params[:id])
+
+    #note that we haven't enforced a unique project_data document 
+    #for each project... toDO
+    @project_data = @project.project_data
+
+    @project_data.target_list = params[:data].map {|idx,row| row}
+
+    if @project_data.save
+      flash[:notice] = "The Target Data has been uploaded"
+      @project.data_uploaded
+    else
+      flash[:notice] = "Something went wrong uploading the target data"
     end
 
     respond_to do |format|

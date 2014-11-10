@@ -5,9 +5,22 @@ var raw_csv_headers = [];
 
 $(document).ready(function() {
 
+    //This javascript needs to be refactored
+    //I have not made it DRY... getting it work first.. then we write tests.. then refactor
+    //I think this may be a good opportunity to use something like AngularJS
+
 	// The event listener for the file upload
-    if(document.getElementById('sourceFileUpload') != null){
+    /*if(document.getElementById('sourceFileUpload') != null){
 	   document.getElementById('sourceFileUpload').addEventListener('change', upload_source, false);
+    }
+    if(document.getElementById('targetFileUpload') != null){
+       document.getElementById('targetFileUpload').addEventListener('change', upload_target, false);
+    }*/
+    if(document.getElementById('sourceFileUpload') != null){
+       document.getElementById('sourceFileUpload').addEventListener('change', upload.bind(null,'source'), false);
+    }
+    if(document.getElementById('targetFileUpload') != null){
+       document.getElementById('targetFileUpload').addEventListener('change', upload.bind(null,'target'), false);
     }
 	// Method that checks that the browser supports the HTML5 File API
     function browserSupportFileUpload() {
@@ -17,21 +30,20 @@ $(document).ready(function() {
         }
         return isCompatible;
     }
-    // Method that reads and processes the selected file
-    function upload_source(evt) {
-    	if (!browserSupportFileUpload()) {
-        	alert('The File APIs are not fully supported in this browser!');
+    function upload(list_type,evt) {
+        if (!browserSupportFileUpload()) {
+            alert('The File APIs are not fully supported in this browser!');
         } 
         else {
-        	var data = null;
-           	var file = evt.target.files[0];
+            var data = null;
+            var file = evt.target.files[0];
             var reader = new FileReader();
             reader.readAsText(file);
             reader.onload = function(event) {
                 var csvData = event.target.result;
                 data = $.csv.toArrays(csvData);
                 if (data && data.length > 0) {
-                  display_and_prepare_form_upload(data);
+                  display_and_prepare_form_upload(data,list_type);
                 } 
                 else {
                     alert('No data to import!');
@@ -40,11 +52,12 @@ $(document).ready(function() {
             reader.onerror = function() {
                 alert('Unable to read ' + file.fileName);
             };
-    	}
+        }
     }
-    function display_and_prepare_form_upload(data) {
+
+    function display_and_prepare_form_upload(data,list_type) {
     	if (data.length > 1){
-    		$('#sourceImportCsv').hide();
+    		$('#'+list_type+'ImportCsv').hide();
     		//tables for now: probably a better UI??
     		var table = $('<table></table>');
     		var table_head = $('<thead></thead>');
@@ -74,16 +87,29 @@ $(document).ready(function() {
 	
     		table.append(table_body);
 	
-    		$('#sourceCsvPreUploadDisplay').append(table);
+    		$('#CsvPreUploadDisplay').append(table);
 
-    		var upload_form = $('#sourceUploadCsvForm');
-    		var uuid_selector = $('#sourceUploadCsvForm #uuid');
-            var field_selector = $('#sourceUploadCsvForm #fieldsForUpload')
-    		headers.forEach(function(header,index) {
+    		var upload_form = $('#'+list_type+'UploadCsvForm');
+    		
+
+            if (list_type == 'source') {
+              var uuid_selector = $('#'+list_type+'UploadCsvForm #uuid');
+              var field_selector = $('#'+list_type+'UploadCsvForm #fieldsForUpload')
+    		  headers.forEach(function(header,index) {
     			var option = $('<option></option>').attr("value", index).text(header);
     			uuid_selector.append(option);
                 field_selector.append('<input type="checkbox" value ="' + index + '" />' + header + '<br />');
-    		});
+    		  });
+            }
+
+            if (list_type == "target") {
+                $('.header_select').each(function(i,select) {
+                    headers.forEach(function(header,index) {
+                        var option = $('<option></option>').attr("value", index).text(header);
+                        $(select).append(option);
+                    });
+                });
+            }
 
 
     		//(uuid_selector.val());
@@ -119,15 +145,46 @@ $(document).ready(function() {
             upload_data.push(upload_row);
         });
 
+        ajax_submit($(this).attr('data-submit-url'), upload_data);
+    });
+
+    $('#submitTargetCsv').on('click', function(e) {
+        e.preventDefault();
+
+        header_indexes = {}
+
+        $('.header_select').each(function(i,select){
+            header_indexes[$(select).attr("name")] = $(select).val();
+        });
+
+        upload_data = [];
+
+        raw_csv_data.forEach(function(row) {
+            var upload_row = {}
+            Object.keys(header_indexes).forEach(function(key) {
+                if(key == "uuid"){
+                    upload_row[key] = row[header_indexes[key]];
+                }
+                else {
+                    upload_row[key] = md5(row[header_indexes[key]]);
+                }
+            });
+            upload_data.push(upload_row);
+        })
+
+        ajax_submit($(this).attr('data-submit-url'), upload_data)
+    });
+
+    function ajax_submit(url,data){
         $.ajax({
     		type: "POST",
-    		url: $(this).attr('data-submit-url'),
-    		data: {data: upload_data},
+    		url: url,
+    		data: {data: data},
     		cache: false,
     		dataType: "JSON",
     		success: function(result) {
                 window.location = result.reload
             }
     	});
-    });
+    }
 });

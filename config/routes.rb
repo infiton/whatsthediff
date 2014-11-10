@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     member do
       post 'add_target_user'
       post 'upload_source_data'
+      post 'upload_target_data'
     end
   end
 end
