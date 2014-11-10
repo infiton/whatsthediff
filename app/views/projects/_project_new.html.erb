@@ -11,5 +11,11 @@
    </fieldset>
 </div>
 <div id="CsvPreUploadDisplay"></div>
+<div id="uploadCsv" style="display:none;">
+	<%= form_tag upload_source_data_project_path(@project), remote: true, id: 'uploadCsvForm' do%>
+	Choose a column to be the unique id: <%= select_tag "uuid" %>
+	<%= submit_tag "upload data" %>
+	<% end %>
+</div>
 <%#passing data to jQuery this way%>
 <%= content_tag :div, id: "upload", data: {url: upload_source_data_project_path(@project)} do%><% end %>

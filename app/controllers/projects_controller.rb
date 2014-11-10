@@ -52,6 +52,8 @@ class ProjectsController < ApplicationController
   def upload_source_data
     @project = Project.find(params[:id])
     puts @project.inspect
+
+    redirect_to :back and return
   end
 protected
 

@@ -43,7 +43,10 @@ $(document).ready(function() {
     		var table_head = $('<thead></thead>');
     		var table_head_row = $('<tr></tr>');
 	
-    		data.shift().forEach(function(header) {
+			//we are assuming here that the first column of the csv has headers
+    		var headers = data.shift();
+
+    		headers.forEach(function(header) {
     			var heading = $('<th></th>').text(header);
     			table_head_row.append(heading);
     		});
@@ -65,11 +68,27 @@ $(document).ready(function() {
     		table.append(table_body);
 	
     		$('#CsvPreUploadDisplay').append(table);
+
+    		var upload_form = $('#uploadCsvForm');
+    		var uuid_selector = $('#uploadCsvForm #uuid');
+    		headers.forEach(function(header) {
+    			var option = $('<option></option>').attr("value", header).text(header);
+    			uuid_selector.append(option);
+    		});
+
+    		//(uuid_selector.val());
+    		$('#uploadCsv').show();
     	}
     	else {
     		alert('No data to import!');
     	}
     }
+
+    $('#uploadCsvForm')
+    	.bind("ajax:beforeSend", function(evt, xhr, settings) {
+    		alert($('#uploadCsvForm #uuid').val());
+    	});
+
     function process_and_send_data(data) {
     	$.ajax({
     		type: "POST",
