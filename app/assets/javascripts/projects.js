@@ -24,7 +24,7 @@ $(document).ready(function() {
                 var csvData = event.target.result;
                 data = $.csv.toArrays(csvData);
                 if (data && data.length > 0) {
-                  process_and_send_data(data);
+                  display_and_prepare_for_upload(data);
                 } 
                 else {
                     alert('No data to import!');
@@ -33,6 +33,41 @@ $(document).ready(function() {
             reader.onerror = function() {
                 alert('Unable to read ' + file.fileName);
             };
+    	}
+    }
+    function display_and_prepare_for_upload(data) {
+    	if (data.length > 1){
+    		$('#dvImportCsv').hide();
+    		//tables for now: probably a better UI??
+    		var table = $('<table></table>');
+    		var table_head = $('<thead></thead>');
+    		var table_head_row = $('<tr></tr>');
+	
+    		data.shift().forEach(function(header) {
+    			var heading = $('<th></th>').text(header);
+    			table_head_row.append(heading);
+    		});
+    		table_head.append(table_head_row);
+    		table.append(table_head);
+	
+    		var table_body = $('<tbody></tbody>');
+	
+			var num_rows = data.length >= 3 ? 3 : data.length;
+    		data.slice(0,num_rows + 1).forEach(function(row) {
+    			var table_row = $('<tr></tr>');
+    			row.forEach(function(value) {
+    				var column = $('<td></td>').text(value);
+    				table_row.append(column);
+    			});
+    			table_body.append(table_row);
+    		});
+	
+    		table.append(table_body);
+	
+    		$('#CsvPreUploadDisplay').append(table);
+    	}
+    	else {
+    		alert('No data to import!');
     	}
     }
     function process_and_send_data(data) {
