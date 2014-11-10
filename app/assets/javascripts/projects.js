@@ -6,7 +6,9 @@ var raw_csv_headers = [];
 $(document).ready(function() {
 
 	// The event listener for the file upload
-	document.getElementById('txtFileUpload').addEventListener('change', upload, false);
+    if(document.getElementById('sourceFileUpload') != null){
+	   document.getElementById('sourceFileUpload').addEventListener('change', upload_source, false);
+    }
 	// Method that checks that the browser supports the HTML5 File API
     function browserSupportFileUpload() {
     	var isCompatible = false;
@@ -16,7 +18,7 @@ $(document).ready(function() {
         return isCompatible;
     }
     // Method that reads and processes the selected file
-    function upload(evt) {
+    function upload_source(evt) {
     	if (!browserSupportFileUpload()) {
         	alert('The File APIs are not fully supported in this browser!');
         } 
@@ -42,7 +44,7 @@ $(document).ready(function() {
     }
     function display_and_prepare_form_upload(data) {
     	if (data.length > 1){
-    		$('#dvImportCsv').hide();
+    		$('#sourceImportCsv').hide();
     		//tables for now: probably a better UI??
     		var table = $('<table></table>');
     		var table_head = $('<thead></thead>');
@@ -72,11 +74,11 @@ $(document).ready(function() {
 	
     		table.append(table_body);
 	
-    		$('#CsvPreUploadDisplay').append(table);
+    		$('#sourceCsvPreUploadDisplay').append(table);
 
-    		var upload_form = $('#uploadCsvForm');
-    		var uuid_selector = $('#uploadCsvForm #uuid');
-            var field_selector = $('#uploadCsvForm #fieldsForUpload')
+    		var upload_form = $('#sourceUploadCsvForm');
+    		var uuid_selector = $('#sourceUploadCsvForm #uuid');
+            var field_selector = $('#sourceUploadCsvForm #fieldsForUpload')
     		headers.forEach(function(header,index) {
     			var option = $('<option></option>').attr("value", index).text(header);
     			uuid_selector.append(option);
@@ -96,45 +98,36 @@ $(document).ready(function() {
     }
 
     
-    $('#submitCsv').on('click', function(e) {
+    $('#submitSourceCsv').on('click', function(e) {
         e.preventDefault();
 
-        var uuid = $('#uploadCsvForm #uuid').val();
+        var uuid = $('#sourceUploadCsvForm #uuid').val();
         var fields = [];
-        $('#uploadCsvForm #fieldsForUpload').children('input').each(function (){
+        $('#sourceUploadCsvForm #fieldsForUpload').children('input').each(function (){
             if($(this).is(':checked')) {
                 fields.push(parseInt($(this).val()));
             }
         });
 
-        var upload_headers = [raw_csv_headers[uuid]];
-
-        fields.forEach(function(ind){
-            upload_headers.push(raw_csv_headers[ind]);
-        });
-
         var upload_data = [];
 
         raw_csv_data.forEach(function(row) {
-            var upload_row = [row[uuid]];
+            var upload_row = {"uuid": row[uuid]};
             fields.forEach(function(ind){
-                upload_row.push(md5(row[ind]));
+                upload_row[raw_csv_headers[ind]] = md5(row[ind]);
             });
             upload_data.push(upload_row);
         });
 
-        //console.log(raw_csv_headers);
-        //console.log(raw_csv_data);
         $.ajax({
     		type: "POST",
     		url: $(this).attr('data-submit-url'),
-    		data: {
-                headers: upload_headers,
-                data: upload_data
-            },
+    		data: {data: upload_data},
     		cache: false,
-    		dataType: "json",
-    		//success: do a function!
-    	})
+    		dataType: "JSON",
+    		success: function(result) {
+                window.location = result.reload
+            }
+    	});
     });
 });

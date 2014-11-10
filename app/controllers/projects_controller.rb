@@ -51,7 +51,20 @@ class ProjectsController < ApplicationController
 
   def upload_source_data
     @project = Project.find(params[:id])
-    puts @project.inspect
+    @project_data = ProjectData.new(project_id: @project.id)
+
+    @project_data.source_list = params[:data].map {|idx,row| row}
+    #this will create another record in MongoDB... may want that behaviour, may not
+    if @project_data.save
+      flash[:notice] = "The Source Data has been uploaded"
+      @project.source_uploaded
+    else
+      flash[:notice] = "Something went wrong uploading the source data"
+    end
+
+    respond_to do |format|
+      format.json { render :json => {:reload => project_url(@project) } }
+    end
   end
 protected
 

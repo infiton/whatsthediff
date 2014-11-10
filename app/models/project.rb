@@ -5,16 +5,23 @@ class Project < ActiveRecord::Base
 
   validates_presence_of :state, :in => [:new, :source_uploaded, :target_uploaded, :complete]
 
+  def project_data
+    ProjectData.where(project_id: self.id).first
+  end
+
   def source_uploaded
     self.state = :source_uploaded
+    self.save
   end
 
   def target_uploaded
     self.state = :target_uploaded
+    self.save
   end
 
   def complete
     self.state = :complete
+    self.save
   end
 
 end
