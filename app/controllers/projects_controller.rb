@@ -127,6 +127,16 @@ class ProjectsController < ApplicationController
       render :partial => "error_processing_results"
     end
   end
+
+  def download
+    @project = Project.find(params[:id])
+
+    respond_to do |format|
+      format.csv { send_data @project.project_data.to_csv(params[:list]) }
+      format.xls { send_data @project.project_data.to_csv(params[:list],col_sep: "\t") }
+    end
+  end
+
 protected
 
   def create_user

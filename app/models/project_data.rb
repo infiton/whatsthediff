@@ -14,4 +14,18 @@ class ProjectData
 	def project
 		Project.find(self.project_id)
 	end
+
+	def to_csv(list, options = {})
+
+		CSV.generate(options) do |csv|
+			out = self.send(list.to_sym)
+			if out.first.is_a? Array
+				csv << (1..out.first.size).map{|x| "unique id #{x}"}
+				out.each { |row| csv << row }
+			else
+				csv << ["unique id"]
+				out.each {|x| csv << [x] }
+			end
+		end
+	end
 end

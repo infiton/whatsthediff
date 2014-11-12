@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       post 'upload_source_data'
       post 'upload_target_data'
       get  'calculate_difference'
+      get  'download'
     end
   end
 end
