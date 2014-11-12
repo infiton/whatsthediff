@@ -38,6 +38,10 @@ class Project < ActiveRecord::Base
     self.save
   end
 
+  def complete?
+    self.state.to_s == "complete"
+  end
+
   def add_target_user user
     self.target_user_id = user.id
     self.target_added

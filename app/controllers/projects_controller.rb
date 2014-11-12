@@ -37,21 +37,8 @@ class ProjectsController < ApplicationController
       @project_headers = @project.project_data.source_list.first.keys.select{|k| k!="uuid"}
     end
 
-  end
-
-  def add_target_user
-    @project = Project.find(params[:id])
-    @target_user = User.where(email: params[:project][:user][:email]).first
-    @target_user ||= create_user
-
-    if @target_user.save
-      flash[:notice] = "An Email request has been sent to #{@target_user.email}"
-      @project.add_target_user @target_user
-      UserMailer.target_user_added_email(@target_user, @project.user, @project).deliver
-      redirect_to project_url(@project)
-    else
-      flash[:notice] = "Email couldn't be sent"
-      redirect_to :back and return
+    if @project.complete?
+      @project_data = @project.project_data
     end
   end
 
@@ -70,6 +57,22 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.json { render :json => {:reload => project_url(@project) } }
+    end
+  end
+
+  def add_target_user
+    @project = Project.find(params[:id])
+    @target_user = User.where(email: params[:project][:user][:email]).first
+    @target_user ||= create_user
+
+    if @target_user.save
+      flash[:notice] = "An Email request has been sent to #{@target_user.email}"
+      @project.add_target_user @target_user
+      UserMailer.target_user_added_email(@target_user, @project.user, @project).deliver
+      redirect_to project_url(@project)
+    else
+      flash[:notice] = "Email couldn't be sent"
+      redirect_to :back and return
     end
   end
 
@@ -93,6 +96,37 @@ class ProjectsController < ApplicationController
       format.json { render :json => {:reload => project_url(@project) } }
     end
   end
+
+  def calculate_difference
+    @project = Project.find(params[:id])
+
+    @project_data = @project.project_data
+
+    source_hash, source_dupes = build_hash_check_dupes @project_data.source_list
+    target_hash, target_dupes = build_hash_check_dupes @project_data.target_list
+
+    source_values = source_hash.keys
+    target_values = target_hash.keys
+
+    source_uniq = source_values - target_values
+    target_uniq = target_values - source_values
+
+    source_target_union = source_values & target_values
+
+    @project_data.source_dupes = source_dupes
+    @project_data.target_dupes = target_dupes
+
+    @project_data.source_uniq = source_uniq.map{|k| source_hash[k]}
+    @project_data.target_uniq = target_uniq.map{|k| target_hash[k]}
+    @project_data.source_target_union = source_target_union.map{|k| [source_hash[k],target_hash[k]]}
+
+    if @project_data.save
+      @project.complete
+      render :partial => "project_results"
+    else
+      render :partial => "error_processing_results"
+    end
+  end
 protected
 
   def create_user
@@ -104,4 +138,23 @@ protected
          )
   end
 
+  private
+
+    def build_hash_check_dupes arr
+      hsh = {}
+      dps = []
+
+      arr.each do |row|
+        uuid = row["uuid"]
+        #concat all hashed fields together into large hash
+        #make sure they are sorted by field name
+        bh = row.to_h.except("uuid").sort.map{|x| x[1]}.join('')
+        if hsh.has_key? bh
+          dps << [hsh[bh], uuid]
+        else
+          hsh[bh] = uuid
+        end  
+      end
+    return hsh, dps  
+  end
 end

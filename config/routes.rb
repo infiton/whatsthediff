@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       post 'add_target_user'
       post 'upload_source_data'
       post 'upload_target_data'
+      get  'calculate_difference'
     end
   end
 end

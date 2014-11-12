@@ -187,4 +187,11 @@ $(document).ready(function() {
             }
     	});
     }
+
+    $("div[data-load]").filter(":visible").each(function(){
+        $('#calculating-message').append("<p>Hey we're thinkin'....</p>");
+        var path = $(this).attr('data-load');
+        $(this).load(path);
+        $('#calculating-message').hide();
+    })
 });
