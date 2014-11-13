@@ -12,7 +12,7 @@ class ProjectsController < ApplicationController
     else
       @user = create_user
       if @user.save == false
-        flash[:notice] = "User could not be created"
+        flash[:notice] = @user.errors.full_messages.to_sentence
         redirect_to :back and return
       end
     end
@@ -24,7 +24,7 @@ class ProjectsController < ApplicationController
       UserMailer.new_project_email(@user,@project).deliver
       redirect_to project_url(@project)
     else
-      flash[:notice] = "Project Could Not be created"
+      flash[:notice] = @project.errors.full_messages.to_sentence
       redirect_to :back
     end
   end
@@ -56,7 +56,7 @@ class ProjectsController < ApplicationController
       flash[:notice] = "The Source Data has been uploaded"
       @project.source_uploaded
     else
-      flash[:notice] = "Something went wrong uploading the source data"
+      flash[:notice] = @project.errors.full_messages.to_sentence
     end
 
     respond_to do |format|
@@ -75,7 +75,7 @@ class ProjectsController < ApplicationController
       UserMailer.target_user_added_email(@target_user, @project.user, @project).deliver
       redirect_to project_url(@project)
     else
-      flash[:notice] = "Email couldn't be sent"
+      flash[:notice] = @target_user.errors.full_messages.to_sentence
       redirect_to :back and return
     end
   end
@@ -93,7 +93,7 @@ class ProjectsController < ApplicationController
       flash[:notice] = "The Target Data has been uploaded"
       @project.data_uploaded
     else
-      flash[:notice] = "Something went wrong uploading the target data"
+      flash[:notice] = @project_data.errors.full_messages.to_sentence
     end
 
     respond_to do |format|
@@ -128,6 +128,7 @@ class ProjectsController < ApplicationController
       @project.complete
       render :partial => "project_results"
     else
+      flash[:notice] => @project_data.errors.full_messages.to_sentence
       render :partial => "error_processing_results"
     end
   end
