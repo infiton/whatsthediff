@@ -1,14 +1,9 @@
-<%= form_for :project, url: projects_path do |f| %>
+<%= form_for :user, url: projects_path do |f| %>
+	
+  Email: <%= f.text_field :email %>
+  First Name: <%= f.text_field :first_name %>
+  Last Name: <%= f.text_field :last_name %>
+  Company: <%= f.text_field :company %>
 
-
-  <%= f.fields_for :user do |form| %>
-
-    Email: <%= form.text_field :email %>
-    First Name: <%= form.text_field :first_name %>
-    Last Name: <%= form.text_field :last_name %>
-    Company: <%= form.text_field :company %>
-
-
-  <%end%>
   <%= f.submit %>
 <%end%>

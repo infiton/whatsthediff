@@ -5,12 +5,16 @@ class ProjectsController < ApplicationController
 
   def create
 
-    @user = User.where(email: params[:project][:user][:email]).first
-    @user ||= create_user
+    @user = User.where(email: params[:user][:email]).first
 
-    if @user.save == false
-      flash[:notice] = "User could not be created"
-      redirect_to :back and return
+    if @user
+      @user.update(user_params)
+    else
+      @user = create_user
+      if @user.save == false
+        flash[:notice] = "User could not be created"
+        redirect_to :back and return
+      end
     end
 
     @project = @user.projects.build(state: :new)
@@ -140,12 +144,11 @@ class ProjectsController < ApplicationController
 protected
 
   def create_user
-    @user = User.new(
-          email: params[:project][:user][:email],
-          first_name: params[:project][:user][:first_name],
-          last_name: params[:project][:user][:last_name],
-          company: params[:project][:user][:company]
-         )
+    @user = User.new(user_params)
+  end
+
+  def user_params
+    params.require(:user).permit(:email, :first_name, :last_name, :company)
   end
 
   private
