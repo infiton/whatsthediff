@@ -28,4 +28,14 @@ class ProjectData
 			end
 		end
 	end
+
+	def project_counts
+		{
+			source_dupes: self.source_dupes.count,
+			source_uniq: self.source_uniq.count,
+			target_dupes: self.target_dupes.count,
+			target_uniq: self.target_uniq.count,
+			source_target_union: self.source_target_union.count
+		}
+	end
 end

@@ -6,15 +6,11 @@ class ProjectsController < ApplicationController
   def create
 
     @user = User.where(email: params[:user][:email]).first
+    @user = @user ? @user.collect_from(user_params) : create_user
 
-    if @user
-      @user.update(user_params)
-    else
-      @user = create_user
-      if @user.save == false
-        flash[:notice] = @user.errors.full_messages.to_sentence
-        redirect_to :back and return
-      end
+    if @user.save == false
+      flash[:notice] = @user.errors.full_messages.to_sentence
+      redirect_to :back and return
     end
 
     @project = @user.projects.build(state: :new)
@@ -41,8 +37,9 @@ class ProjectsController < ApplicationController
       @project_headers = @project.project_data.source_list.first.keys.select{|k| k!="uuid"}
     end
 
+    #this is faster than loading project_data and sending it to the view
     if @project.complete?
-      @project_data = @project.project_data
+      @project_counts = @project.project_data.project_counts
     end
   end
 
@@ -126,9 +123,9 @@ class ProjectsController < ApplicationController
 
     if @project_data.save
       @project.complete
+      @project_counts = @project_data.project_counts
       render :partial => "project_results"
     else
-      flash[:notice] => @project_data.errors.full_messages.to_sentence
       render :partial => "error_processing_results"
     end
   end
