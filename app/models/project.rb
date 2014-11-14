@@ -14,28 +14,23 @@ class Project < ActiveRecord::Base
   end
 
   def source_uploaded
-    self.state = "source_uploaded"
-    self.save
+    change_state_to "source_uploaded"
   end
 
   def target_added
-    self.state = "target_added"
-    self.save
+    change_state_to "target_added"
   end
 
   def target_uploaded
-    self.state = "target_uploaded"
-    self.save
+    change_state_to "target_uploaded"
   end
 
   def data_uploaded
-    self.state = "data_uploaded"
-    self.save
+    change_state_to "data_uploaded"
   end
 
   def complete
-    self.state = "complete"
-    self.save
+    change_state_to "complete"
   end
 
   def complete?
@@ -46,5 +41,12 @@ class Project < ActiveRecord::Base
     self.target_user_id = user.id
     self.target_added
   end
+
+  private
+
+    def change_state_to state
+      self.state = state
+      self.save
+    end
   
 end
