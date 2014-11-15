@@ -1,0 +1,27 @@
+<div class="row">
+  <h4>Time for the target to upload their data.</h4>
+</div>
+<div>
+	
+</div>
+<div id="targetImportCsv" class="fileupload ">  
+    <fieldset>
+        <legend>Upload your CSV File</legend>
+        	<%#https://cmatskas.com/importing-csv-files-using-jquery-and-html5/%>
+        	<%#http://www.w3.org/TR/html-markup/input.file.html%>
+            <input type="file" name="File Upload" id="targetFileUpload" accept=".csv" />
+   </fieldset>
+</div>
+<div id="CsvPreUploadDisplay"></div>
+<div id="uploadCsv" style="display:none;">
+	<form id='targetUploadCsvForm'>
+	Choose a column to be the unique id: <select id="uuid" name="uuid" class="header_select"></select>
+   	<%=@user.full_name%> uploaded their data with the headers below, choose your matching field.
+	<ul>
+		<% @project_headers.each do |header| %>
+			<li><%=header%></li> <select id="<%=header%>" name="<%=header%>" class="header_select"></select>
+		<% end %>
+	</ul>
+	 <button id="submitTargetCsv" data-submit-url="<%= upload_target_data_project_path(@project)%>">upload data</button>
+  </form>
+</div>

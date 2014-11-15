@@ -13,7 +13,7 @@ class ProjectsController < ApplicationController
       redirect_to :back and return
     end
 
-    @project = @user.projects.build(state: "new")
+    @project = @user.projects.build()
 
     if @user.save && @project.save
       flash[:notice] = "Project Successfully Created"
@@ -38,7 +38,7 @@ class ProjectsController < ApplicationController
     end
 
     #this is faster than loading project_data and sending it to the view
-    if @project.complete?
+    if @project.completed?
       @project_counts = @project.project_data.project_counts
     end
   end
@@ -51,7 +51,7 @@ class ProjectsController < ApplicationController
     #this will create another record in MongoDB... may want that behaviour, may not
     if @project_data.save
       flash[:notice] = "The Source Data has been uploaded"
-      @project.source_uploaded
+      @project.upload_source!
     else
       flash[:notice] = @project.errors.full_messages.to_sentence
     end
@@ -68,7 +68,7 @@ class ProjectsController < ApplicationController
 
     if @target_user.save
       flash[:notice] = "An Email request has been sent to #{@target_user.email}"
-      @project.add_target_user @target_user
+      @project.add_target_user! :target_user_added, @target_user
       UserMailer.target_user_added_email(@target_user, @project.user, @project).deliver
       redirect_to project_url(@project)
     else
@@ -88,7 +88,7 @@ class ProjectsController < ApplicationController
 
     if @project_data.save
       flash[:notice] = "The Target Data has been uploaded"
-      @project.data_uploaded
+      @project.upload_target!
     else
       flash[:notice] = @project_data.errors.full_messages.to_sentence
     end
@@ -122,7 +122,7 @@ class ProjectsController < ApplicationController
     @project_data.source_target_union = source_target_union.map{|k| [source_hash[k],target_hash[k]]}
 
     if @project_data.save
-      @project.complete
+      @project.complete!
       @project_counts = @project_data.project_counts
       render :partial => "project_results"
     else
