@@ -17,7 +17,6 @@ class ProjectsController < ApplicationController
 
     if @user.save && @project.save
       flash[:notice] = "Project Successfully Created"
-      UserMailer.new_project_email(@user,@project).deliver
       redirect_to project_url(@project)
     else
       flash[:notice] = @project.errors.full_messages.to_sentence
@@ -45,15 +44,11 @@ class ProjectsController < ApplicationController
 
   def upload_source_data
     @project = Project.find(params[:id])
-    @project_data = ProjectData.new(project_id: @project.id)
 
-    @project_data.source_list = params[:data].map {|idx,row| row}
-    #this will create another record in MongoDB... may want that behaviour, may not
-    if @project_data.save
+    if @project.upload_source! :source_uploaded, params[:data]
       flash[:notice] = "The Source Data has been uploaded"
-      @project.upload_source!
     else
-      flash[:notice] = @project.errors.full_messages.to_sentence
+      flash[:notice] = "There was an error uploading the data"
     end
 
     respond_to do |format|
@@ -67,9 +62,8 @@ class ProjectsController < ApplicationController
     @target_user ||= create_user
 
     if @target_user.save
-      flash[:notice] = "An Email request has been sent to #{@target_user.email}"
       @project.add_target_user! :target_user_added, @target_user
-      UserMailer.target_user_added_email(@target_user, @project.user, @project).deliver
+      flash[:notice] = "An Email request has been sent to #{@target_user.email}"
       redirect_to project_url(@project)
     else
       flash[:notice] = @target_user.errors.full_messages.to_sentence
@@ -80,17 +74,10 @@ class ProjectsController < ApplicationController
   def upload_target_data
     @project = Project.find(params[:id])
 
-    #note that we haven't enforced a unique project_data document 
-    #for each project... toDO
-    @project_data = @project.project_data
-
-    @project_data.target_list = params[:data].map {|idx,row| row}
-
-    if @project_data.save
+    if @project.upload_target! :data_uploaded, params[:data]
       flash[:notice] = "The Target Data has been uploaded"
-      @project.upload_target!
     else
-      flash[:notice] = @project_data.errors.full_messages.to_sentence
+      flash[:notice] = "There was error uploading the data"
     end
 
     respond_to do |format|
@@ -100,7 +87,6 @@ class ProjectsController < ApplicationController
 
   def calculate_difference
     @project = Project.find(params[:id])
-
     @project_data = @project.project_data
 
     source_hash, source_dupes = build_hash_check_dupes @project_data.source_list

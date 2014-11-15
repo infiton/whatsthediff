@@ -12,7 +12,7 @@ class Project < ActiveRecord::Base
   end
 
   aasm :column => :state do
-    state :new, :initial => true
+    state :new, :initial => true, :after => UserMailer.new_project_email(self.user,self).deliver
     state :source_uploaded
     state :target_user_added
     state :data_uploaded
@@ -20,17 +20,27 @@ class Project < ActiveRecord::Base
 
     event :upload_source do
       transitions :from => :new, :to => :source_uploaded
+      before do |data|
+        #we maybe should refactor this to a service object
+        ProjectData.create( project_id: self.id, source_list: data.map {|idx,row| row} )
+      end
     end
 
     event :add_target_user do
       transitions :from => :source_uploaded, :to => :target_user_added
-      before do |user|
-        self.target_user_id = user.id
+      before do |target_user|
+        #again add service object here
+        self.target_user_id = target_user.id
+        UserMailer.target_user_added_email(target_user, self.user, self).deliver
       end
     end
 
     event :upload_target do
       transitions :from => :target_user_added, :to => :data_uploaded
+      before do |data|
+        puts data
+        self.project_data.update( target_list: data.map {|idx,row| row} )
+      end
     end
 
     event :complete do
