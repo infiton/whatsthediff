@@ -16,9 +16,9 @@
 <div id="uploadCsv" style="display:none;">
 	<form id='targetUploadCsvForm'>
 	Choose a column to be the unique id: <select id="uuid" name="uuid" class="header_select"></select>
-   	<%=@user.full_name%> uploaded their data with the headers below, choose your matching field.
+   	<%=@project.user_name%> uploaded their data with the headers below, choose your matching field.
 	<ul>
-		<% @project_headers.each do |header| %>
+		<% @project.headers.each do |header| %>
 			<li><%=header%></li> <select id="<%=header%>" name="<%=header%>" class="header_select"></select>
 		<% end %>
 	</ul>

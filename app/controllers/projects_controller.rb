@@ -24,21 +24,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.find(params[:id])
-
-    @user = @project.user
-    #this will not exist until the state is brought here
-    #will be nil unless state >= target_user_added
-    @target_user = @project.target_user
-
-    if @project.project_data and @project.project_data.has_attribute?(:source_list)
-      @project_headers = @project.project_data.source_list.first.keys.select{|k| k!="uuid"}
-    end
-
-    #this is faster than loading project_data and sending it to the view
-    if @project.completed?
-      @project_counts = @project.project_data.project_counts
-    end
+    @project = Project.find(params[:id]).decorate
   end
 
   def upload_source_data
@@ -89,7 +75,7 @@ class ProjectsController < ApplicationController
 
     if @project
       @project.complete!
-      @project_counts = @project.project_data.project_counts
+      @project = @project.decorate
       render :partial => "project_results"
     else
       render :partial => "error_processing_results"
