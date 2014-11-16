@@ -1,6 +1,5 @@
 class ProjectsController < ApplicationController
   def new
-
   end
 
   def create
@@ -86,30 +85,11 @@ class ProjectsController < ApplicationController
   end
 
   def calculate_difference
-    @project = Project.find(params[:id])
-    @project_data = @project.project_data
+    @project = DifferenceCalculator.new( Project.find(params[:id]) ).calculate_difference
 
-    source_hash, source_dupes = build_hash_check_dupes @project_data.source_list
-    target_hash, target_dupes = build_hash_check_dupes @project_data.target_list
-
-    source_values = source_hash.keys
-    target_values = target_hash.keys
-
-    source_uniq = source_values - target_values
-    target_uniq = target_values - source_values
-
-    source_target_union = source_values & target_values
-
-    @project_data.source_dupes = source_dupes
-    @project_data.target_dupes = target_dupes
-
-    @project_data.source_uniq = source_uniq.map{|k| source_hash[k]}
-    @project_data.target_uniq = target_uniq.map{|k| target_hash[k]}
-    @project_data.source_target_union = source_target_union.map{|k| [source_hash[k],target_hash[k]]}
-
-    if @project_data.save
+    if @project
       @project.complete!
-      @project_counts = @project_data.project_counts
+      @project_counts = @project.project_data.project_counts
       render :partial => "project_results"
     else
       render :partial => "error_processing_results"
@@ -125,33 +105,13 @@ class ProjectsController < ApplicationController
     end
   end
 
-protected
+  protected
 
-  def create_user
-    @user = User.new(user_params)
-  end
+    def create_user
+      @user = User.new(user_params)
+    end
 
-  def user_params
-    params.require(:user).permit(:email, :first_name, :last_name, :company)
-  end
-
-  private
-
-    def build_hash_check_dupes arr
-      hsh = {}
-      dps = []
-
-      arr.each do |row|
-        uuid = row["uuid"]
-        #concat all hashed fields together into large hash
-        #make sure they are sorted by field name
-        bh = row.to_h.except("uuid").sort.map{|x| x[1]}.join('')
-        if hsh.has_key? bh
-          dps << [hsh[bh], uuid]
-        else
-          hsh[bh] = uuid
-        end  
-      end
-    return hsh, dps  
-  end
+    def user_params
+      params.require(:user).permit(:email, :first_name, :last_name, :company)
+    end
 end
