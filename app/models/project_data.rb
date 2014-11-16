@@ -11,6 +11,8 @@ class ProjectData
 	field :target_uniq, type: Array
 	field :source_target_union, type: Array
 
+	validates_presence_of :project_id
+	
 	def project
 		Project.find(self.project_id)
 	end
