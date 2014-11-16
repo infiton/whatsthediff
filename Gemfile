@@ -29,8 +29,20 @@ group :development do
 	gem 'capistrano', '~> 3.1.0'
 	gem 'capistrano-rails', '~> 1.1'
 	gem 'capistrano-bundler'
-        gem 'better_errors'
-        gem "binding_of_caller" #dependancy for better_errors
+    gem 'better_errors'
+    gem "binding_of_caller" #dependancy for better_errors
+end
+
+group :development, :test do
+	gem 'rspec-rails'
+	gem 'factory_girl_rails'
+end
+
+group :test do
+	gem 'faker'
+	gem 'capybara'
+	#gem 'gaurd-rspec', require: false
+	gem 'launchy'
 end
 
 ##For whatsthediff
