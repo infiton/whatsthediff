@@ -34,7 +34,7 @@ group :development do
 end
 
 group :development, :test do
-	gem 'rspec-rails'
+	gem 'rspec-rails', '~>3.0.0'
 	gem 'factory_girl_rails'
 end
 
@@ -43,6 +43,7 @@ group :test do
 	gem 'capybara'
 	#gem 'gaurd-rspec', require: false
 	gem 'launchy'
+	gem 'database_cleaner'
 end
 
 ##For whatsthediff

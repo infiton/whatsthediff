@@ -18,7 +18,7 @@ describe User do
 			good_emails = ["a@a.com", "test@example.co.nz", "hello@gmail.com"]
 			good_emails.each do |email|
 				before { user.email = email }
-				it { expect(user).to_not be_valid }
+				it { expect(user).to be_valid }
 			end
 		end
 	end
