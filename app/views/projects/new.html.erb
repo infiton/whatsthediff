@@ -9,6 +9,16 @@
 <%end%>
 
 <div class="row">
+  <a href="#" data-reveal-id="returningUser">Returning User?</a>
+    <div id="returningUser" class="reveal-modal" data-reveal>
+      <%= form_for :user, url: projects_path do |f| %>
+        Email: <%= f.text_field :email %>
+          <%= f.submit %> <!-- Need to add validations to ensure user has already been created previously (with name fields) -->
+      <% end %>
+    </div>
+</div>
+
+<div class="row">
   <h2>Get Started</h2>
   <%= render "new_project_form" %>
 </div>
