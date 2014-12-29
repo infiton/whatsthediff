@@ -1,4 +1,4 @@
-//these are global variables
+    //these are global variables
 //todo: refactor so that we don't use globals
 var raw_csv_data = [];
 var raw_csv_headers = [];
@@ -9,19 +9,9 @@ $(document).ready(function() {
     //I have not made it DRY... getting it work first.. then we write tests.. then refactor
     //I think this may be a good opportunity to use something like AngularJS
 
-	// The event listener for the file upload
-    /*if(document.getElementById('sourceFileUpload') != null){
-	   document.getElementById('sourceFileUpload').addEventListener('change', upload_source, false);
-    }
-    if(document.getElementById('targetFileUpload') != null){
-       document.getElementById('targetFileUpload').addEventListener('change', upload_target, false);
-    }*/
-    if(document.getElementById('sourceFileUpload') != null){
-       document.getElementById('sourceFileUpload').addEventListener('change', upload.bind(null,'source'), false);
-    }
-    if(document.getElementById('targetFileUpload') != null){
-       document.getElementById('targetFileUpload').addEventListener('change', upload.bind(null,'target'), false);
-    }
+   $('#sourceFileUpload').change(function(e){upload('source', e)});
+   $('#targetFileUpload').change(function(e){upload('target', e)});
+
 	// Method that checks that the browser supports the HTML5 File API
     function browserSupportFileUpload() {
     	var isCompatible = false;
@@ -30,10 +20,11 @@ $(document).ready(function() {
         }
         return isCompatible;
     }
+
     function upload(list_type,evt) {
         if (!browserSupportFileUpload()) {
             alert('The File APIs are not fully supported in this browser!');
-        } 
+        }
         else {
             var data = null;
             var file = evt.target.files[0];
@@ -44,7 +35,7 @@ $(document).ready(function() {
                 data = $.csv.toArrays(csvData);
                 if (data && data.length > 0) {
                   display_and_prepare_form_upload(data,list_type);
-                } 
+                }
                 else {
                     alert('No data to import!');
                 }
@@ -62,7 +53,7 @@ $(document).ready(function() {
     		var table = $('<table></table>');
     		var table_head = $('<thead></thead>');
     		var table_head_row = $('<tr></tr>');
-	
+
 			//we are assuming here that the first column of the csv has headers
     		var headers = data.shift();
 
@@ -72,9 +63,9 @@ $(document).ready(function() {
     		});
     		table_head.append(table_head_row);
     		table.append(table_head);
-	
+
     		var table_body = $('<tbody></tbody>');
-	
+
 			var num_rows = data.length >= 3 ? 3 : data.length;
     		data.slice(0,num_rows + 1).forEach(function(row) {
     			var table_row = $('<tr></tr>');
@@ -84,13 +75,13 @@ $(document).ready(function() {
     			});
     			table_body.append(table_row);
     		});
-	
+
     		table.append(table_body);
-	
+
     		$('#CsvPreUploadDisplay').append(table);
 
     		var upload_form = $('#'+list_type+'UploadCsvForm');
-    		
+
 
             if (list_type == 'source') {
               var uuid_selector = $('#'+list_type+'UploadCsvForm #uuid');
@@ -123,7 +114,7 @@ $(document).ready(function() {
     	}
     }
 
-    
+
     $('#submitSourceCsv').on('click', function(e) {
         e.preventDefault();
 
