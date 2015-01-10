@@ -1,32 +1,50 @@
 <% content_for :title do "WhatsTheDiff | Home" end %>
 
-<div class="row">
-  <div class="small-12 columns">
-    <h1 class="text-center">WhatsTheDiff</h1>
-  </div>
-</div>
+<section id="intro">
+  <div class="row">
+    <div class="small-12 columns">
+      <h1 class="text-center">WhatsTheDiff</h1>
+      <div class="panel">
+        <h3>Email List Sharing Solutions</h3>
 
-<div class="row">
-  <div class="small-12 columns">
-    <div class="panel">
-      <h3>Simple and Effective Email list sharing</h3>
-      <p> A bunch of sales copy and feature descriptions </p>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="row">
-  <div class="small-6 columns">
-    <div class="panel">
-      <h4>Want to Learn more?</h4>
-      <%= link_to "Check the FAQ", " ", class: "button" %>
+<section id="features">
+  <div class="row">
+    <div class="small-4 columns">
+      <h2>Simple</h2>
+      <p>In just a few steps, see exactly how many unique contacts a potential e-mail list has, and how many are duplicates</p>
+    </div>
+    <div class="small-4 columns">
+       <h2>Secure</h2>
+       <p> Information is processed on the client with javascript, ensuring your valuable information never leaves your control
+       see the deatails on our <%= link_to "faq", faq_path %> page </p>
+    </div>
+    <div class="small-4 columns">
+       <h2>Cost Effective</h2>
+       <p>Negotiate a fair cost and share just those contacts which are unique </p>
     </div>
   </div>
+  <br>
+</section>
 
-  <div class="small-6 columns">
-    <div class="panel">
-      <h4>Ready to Get Started?</h4>
-      <%= link_to "New Project", new_project_path, class: "button" %>
+<section id="actions">
+  <div class="row">
+    <div class="small-6 columns">
+      <div class="panel">
+        <h4>Want to Learn more?</h4>
+        <%= link_to "Learn More", learn_more_path, class: "button" %>
+      </div>
+    </div>
+
+    <div class="small-6 columns">
+      <div class="panel">
+        <h4>Ready to Get Started?</h4>
+        <%= link_to "New Project", new_project_path, class: "button" %>
+      </div>
     </div>
   </div>
-</div>
+</section>

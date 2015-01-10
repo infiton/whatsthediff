@@ -1,0 +1,9 @@
+<%if flash[:notice] %>
+<div class="row">
+  <div class="small-3 columns"></div>
+  <div data-alert class="alert-box alert small-6 columns text-center">
+    <%= flash[:notice] %>
+  </div>
+  <div class="small-3 columns"></div>
+</div>
+<%end%>
