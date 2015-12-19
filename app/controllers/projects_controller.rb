@@ -4,6 +4,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    @project = Project.find(params[:id])
   end
 
   def create
@@ -17,14 +18,22 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def source
+  def update
+    @project = Project.find(params[:id])
+
+    @project_updater = ProjectUpdater.new(@project)
 
     respond_to do |format|
-      format.json do
-        render status: :ok, json: {}
+      if @project_updater.call(params[:op], params[:args])
+        format.json do
+          render status: :ok, json: {}
+        end
+      else
+        format.json do
+          render status: :unprocessable_entity, json: {errors: @project_updater.errors}
+        end
       end
     end
-
   end
 
   private

@@ -1,5 +1,6 @@
-function App(){
+function App(project_id){
   var self = this;
+  self.project_id = project_id;
 
   /*
     App parameter declarations
@@ -88,22 +89,45 @@ function App(){
       file_type: 'source', //should be either 'source' or 'target'
       field_signature: self.field_signature()
     }
-    
-    self.read_and_submit_data(self.source_file());
+    $.ajax('/projects/' + self.project_id, {
+      type: "PATCH",
+      data_type: "json",
+      data: {
+        op: "configure", 
+        args: {
+          field_signature: self.field_signature()
+        }
+      },
+      success: function(data){
+        self.read_and_submit_data(self.source_file(), "source");
+      },
+      error: function(data){
+        console.log(data);
+      }
+    })
   };
 
-  self.send_data_chunk = function(hash_buffer, on_success) {
-    $.ajax('/projects/' + 'need_project_id' + '/source', {
-      type: "POST",
+  self.send_data_chunk = function(data_type, hash_buffer, on_success) {
+    $.ajax('/projects/' + self.project_id, {
+      type: "PATCH",
       dataType: "json",
-      data: {data_chunk: hash_buffer},
+      data: {
+        op: "load_data_chunk",
+        args: {
+          data_type: data_type,
+          chunk: hash_buffer
+        }
+      },
       success: function(data){
         on_success();
+      },
+      error: function(data){
+        console.log(data);
       }
     });
   };
 
-  self.read_and_submit_data = function(file){
+  self.read_and_submit_data = function(file, data_type){
     var lr = new LineReader();
     var line_count = -1;
 
@@ -132,7 +156,7 @@ function App(){
         hash_buffer.push(hobj);
         
         if( hash_buffer.length >= self.parameters.CHUNK_SIZE){
-          self.send_data_chunk(hash_buffer, function(){
+          self.send_data_chunk(data_type, hash_buffer, function(){
             hash_buffer.length = 0;
             next();
           })

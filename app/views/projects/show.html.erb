@@ -43,6 +43,6 @@
   <%= javascript_include_tag "knockout/ko-file.js" %>
   <%= javascript_include_tag "knockout/app.js" %>
   <script>
-    ko.applyBindings(new App(), $('.app')[0])
+    ko.applyBindings(new App(<%= @project.to_param %>), $('.app')[0])
   </script>
 <% end %>
