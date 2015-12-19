@@ -1,9 +1,0 @@
-<%#we may want to add authentication to mongo%>
-<%#http://stackoverflow.com/questions/7300080/mongodb-and-mongoid-in-production%>
-production:
-  sessions:
-    default:
-      database: whatsthediff_production
-      hosts:
-        - localhost:27017
-      options:

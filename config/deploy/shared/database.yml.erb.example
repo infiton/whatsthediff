@@ -1,9 +1,0 @@
-production:
-  adapter: mysql2
-  host: localhost
-  encoding: utf8
-  pool: 5
-  username: <%= "#{fetch(:application)}_#{fetch(:rails_env)}" %>
-  password: 
-  database: <%= "#{fetch(:application)}_#{fetch(:rails_env)}" %>
-  socket: 

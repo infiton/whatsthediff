@@ -1,6 +1,0 @@
-<p>Processing is complete!</p>
-<p>The source file has <%=@project.counts[:source_dupes]%> dupes. <%= get_csv @project, "source_dupes" %> <%= get_xls @project, "source_dupes" %></p>
-<p>The source file has <%=@project.counts[:source_uniq]%> unique contacts. <%= get_csv @project, "source_uniq" %> <%= get_xls @project, "source_uniq" %></p>
-<p>The target file has <%=@project.counts[:target_dupes]%> dupes. <%= get_csv @project, "target_dupes" %> <%= get_xls @project, "target_dupes" %></p>
-<p>The target file has <%=@project.counts[:target_uniq]%> unique contacts <%= get_csv @project, "target_uniq" %> <%= get_xls @project, "target_uniq" %></p>
-<p>The two files share <%=@project.counts[:source_target_union]%> contacts <%= get_csv @project, "source_target_union" %> <%= get_xls @project, "source_target_union" %></p>
