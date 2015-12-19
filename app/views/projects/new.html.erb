@@ -1,0 +1,10 @@
+<h1>Create a new project</h1>
+
+<%= form_for ProjectForm.new, url: projects_path do |f| %>
+  <%= f.hidden_field :collect_info, value: "yes" %>
+  <%= f.text_field :first_name, placeholder: "First Name" %>
+  <%= f.text_field :last_name, placeholder: "Last Name" %>
+  <%= f.email_field :email, placeholder: "Email" %>
+  <%= f.text_field :company, placeholder: "Company" %>
+  <%= f.submit %>
+<% end %>

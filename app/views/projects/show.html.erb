@@ -1,0 +1,48 @@
+<div id='app' style="display:none" data-bind="visible: $data">
+  <div data-bind="visible: hasFileApi()">
+    <div>
+      <input type="file" accept=".csv" data-bind="file: source_file">
+      <button data-bind="visible: source_file, click: readSourceHeader">Looky loo</button>
+    </div>
+    <div data-bind="with: source_header">
+      <table>
+        <thead>
+          <tr data-bind="foreach: header().row()">
+            <th>
+              <div data-bind="text: $data"></div>
+              <div>
+                <label>Unique id</label>
+                <input type="radio" name="unique_id" data-bind="checkedValue: $index, checked: $root.unique_id_idx, click: function(){ $root.clear_diff_fields($index()); return true;}"/>
+              </div>
+              <div>
+                <label>Use to diff</label>
+                <input type="checkbox" data-bind="checkedValue: [$index(),$data], checked: $root.diff_fields, disable: $root.unique_id_idx() === $index()" />
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody data-bind="foreach: rows()">
+          <tr data-bind="foreach: $data.row()">
+            <td data-bind="text: $data"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button data-bind="click: submit">Submit</button>
+  </div>
+  <div data-bind="visible: !hasFileApi()">
+    <%= render 'update_browser' %>
+  </div>
+</div>
+
+<% content_for :foot do %> 
+  <%= javascript_include_tag "lib/knockout-min.js" %>
+  <%= javascript_include_tag "lib/linereader.js" %>
+  <%= javascript_include_tag "lib/csv.js" %>
+  <%= javascript_include_tag "lib/md5.js" %>
+  <%= javascript_include_tag "knockout/ko-file.js" %>
+  <%= javascript_include_tag "knockout/app.js" %>
+  <script>
+    ko.applyBindings(new App(), $('.app')[0])
+  </script>
+<% end %>

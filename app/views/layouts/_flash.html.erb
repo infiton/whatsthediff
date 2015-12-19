@@ -1,0 +1,6 @@
+<% flash.each do |key,msg| %>
+  <div class="alert alert-<%= key %> alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <%= sanitize(msg) if msg.is_a?(String) %>
+  </div>
+<% end %>

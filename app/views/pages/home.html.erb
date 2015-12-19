@@ -1,0 +1,9 @@
+<h1>Hi this is the home page</h1>
+
+<div>
+  <p>Let's get started</p>
+  <%= form_for ProjectForm.new, url: projects_path do |f| %>
+    <%= f.email_field :email, placeholder: "Email" %>
+    <%= f.submit %>
+  <% end %>
+</div>
