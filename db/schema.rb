@@ -11,7 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151218230033) do
+ActiveRecord::Schema.define(version: 20151219143650) do
+
+  create_table "project_rows", force: :cascade do |t|
+    t.integer  "project_id", limit: 4
+    t.integer  "data_type",  limit: 4
+    t.string   "uid",        limit: 255
+    t.string   "digest",     limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "project_rows", ["data_type"], name: "index_project_rows_on_data_type", using: :btree
+  add_index "project_rows", ["digest"], name: "index_project_rows_on_digest", using: :btree
+  add_index "project_rows", ["project_id"], name: "fk_rails_58baa0d94a", using: :btree
 
   create_table "projects", force: :cascade do |t|
     t.string   "state",           limit: 255
@@ -36,5 +49,6 @@ ActiveRecord::Schema.define(version: 20151218230033) do
 
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
 
+  add_foreign_key "project_rows", "projects"
   add_foreign_key "projects", "users"
 end

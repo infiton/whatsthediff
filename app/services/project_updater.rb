@@ -38,12 +38,14 @@ class ProjectUpdater
     end
 
     def load_data_chunk(args={})
-      unless args[:data_type] && ["source", "target"].include?(args[:data_type]) && args[:chunk] && args[:chunk].respond_to?(:values)
-        @errors = ["Did not receive a valid data chunk"]
+      loader = ProjectRowLoader.new(@project, args[:data_type], args[:chunk])
+      
+      unless loader.valid?
+        @errors = loader.errors.full_messages
         return false
       end
 
-      if @project.load_data_chunk(args[:data_type], args[:chunk].values)
+      if loader.call
         @project
       else
         @errors = ["Could not load data chunk"]

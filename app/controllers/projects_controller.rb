@@ -24,7 +24,7 @@ class ProjectsController < ApplicationController
     @project_updater = ProjectUpdater.new(@project)
 
     respond_to do |format|
-      if @project_updater.call(params[:op], params[:args])
+      if @project_updater.call(project_update_op, project_update_args)
         format.json do
           render status: :ok, json: {}
         end
@@ -41,5 +41,13 @@ class ProjectsController < ApplicationController
       params
         .require(:project_form)
         .permit(ProjectForm.permitted_attributes)
+    end
+
+    def project_update_op
+      params[:op]
+    end
+
+    def project_update_args
+      params[:args]
     end
 end

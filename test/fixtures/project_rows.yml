@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  project_id: 1
+  data_type: 1
+  uid: MyString
+  hash: MyString
+
+two:
+  project_id: 1
+  data_type: 1
+  uid: MyString
+  hash: MyString

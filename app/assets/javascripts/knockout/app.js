@@ -85,19 +85,16 @@ function App(project_id){
   };
 
   self.submit = function(){
-    var payload = {
-      file_type: 'source', //should be either 'source' or 'target'
-      field_signature: self.field_signature()
-    }
     $.ajax('/projects/' + self.project_id, {
       type: "PATCH",
       data_type: "json",
-      data: {
+      contentType: "application/json",
+      data: JSON.stringify({
         op: "configure", 
         args: {
           field_signature: self.field_signature()
         }
-      },
+      }),
       success: function(data){
         self.read_and_submit_data(self.source_file(), "source");
       },
@@ -111,13 +108,14 @@ function App(project_id){
     $.ajax('/projects/' + self.project_id, {
       type: "PATCH",
       dataType: "json",
-      data: {
+      contentType: "application/json",
+      data: JSON.stringify({
         op: "load_data_chunk",
         args: {
           data_type: data_type,
           chunk: hash_buffer
         }
-      },
+      }),
       success: function(data){
         on_success();
       },
@@ -150,8 +148,10 @@ function App(project_id){
           hkey += row.row()[idx];
         }
         var uid = row.row()[unique_id_idx];
-        var hobj = {};
-        hobj[uid] = md5(hkey);
+        var hobj = {
+          uid: uid,
+          digest: md5(hkey)
+        };
 
         hash_buffer.push(hobj);
         
@@ -167,7 +167,9 @@ function App(project_id){
     });
 
     lr.on('end', function(){
-      self.send_data_chunk(hash_buffer, function(){
+      self.send_data_chunk(data_type, hash_buffer, function(){
+        //we are done uploading to the server
+        //move project to source_uploaded state
         hash_buffer.length = 0;
         console.log("All the data got sent!!");
       })
