@@ -12,6 +12,7 @@ class Project < ActiveRecord::Base
   aasm column: :state, whiny_transitions: false do
     state :new, initial: true
     state :configured
+    state :source_uploaded
 
     event :configure do
       before do |*args|
@@ -19,6 +20,10 @@ class Project < ActiveRecord::Base
       end
 
       transitions from: :new, to: :configured
+    end
+
+    event :finalize_source do
+      transitions from: :configured, to: :source_uploaded
     end
   end
 

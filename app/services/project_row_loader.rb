@@ -6,13 +6,14 @@ class ProjectRowLoader
     @data_type = data_type
     @data_chunk = data_chunk
 
-    build_rows
+    @rows = build_rows
   end
 
-  def call
+  def call(is_last_chunk=false)
     return false unless @rows && @rows.any?
     
     if ActiveRecord::Base.transaction { connection.insert(sql) }
+      @project.finalize_source! if is_last_chunk
       @rows.count
     else
       false
@@ -21,24 +22,14 @@ class ProjectRowLoader
 
   private
     def build_rows
-      return false unless valid_type?
-
       rows = []
       @data_chunk.each do |row|
-        next unless row[:uid] && row[:digest]
-        rows << @project.send(row_type).build(uid: row[:uid], digest: row[:digest])
+        if row = ProjectRow.build_from(@project, data_type: @data_type, uid: row[:uid], digest: row[:digest])
+          rows << row
+        end
       end
-
-      return false unless rows.any?
-      @rows = rows
-    end
-
-    def row_type
-      "#{@data_type}_rows"
-    end
-
-    def valid_type?
-      @project.respond_to?(row_type)
+      
+      rows
     end
 
     def connection

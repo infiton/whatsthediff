@@ -1,4 +1,4 @@
-function App(project_id){
+function App(project_id, state){
   var self = this;
   self.project_id = project_id;
 
@@ -13,11 +13,26 @@ function App(project_id){
     **************************
   */
 
-  self.source_file = ko.observable();
-  self.source_header = ko.observable();
-  self.unique_id_idx = ko.observable();
-  self.diff_fields = ko.observableArray();
+  self.state = ko.observable(state);
+  
+  self.state_app = ko.computed(function(){
+    var app;
+    switch(self.state()){
+      case 'new':
+        app = new SourceUploader(self);
+        break;
+      case 'source_uploaded':
+        app = new TargetSelector(self);
+        break;
+      default:
+        app = new SourceUploader(self);
+        break;
+    }
 
+    return app;
+  });
+
+  
   self.readHeader = function(file,target) {
     var header_reader = new LineReader();
     var header_csv = new Csv();
@@ -48,89 +63,10 @@ function App(project_id){
     header_reader.read(file);
   }
 
-  self.readSourceHeader = function(){
-    self.source_header(null);
-    self.unique_id_idx(null);
-    self.diff_fields([]);
-    self.readHeader(self.source_file(), self.source_header);
-  };
-
-  self.clear_diff_fields = function(idx){
-    self.diff_fields.remove(function(item){
-      return item[0] === idx;
-    })
-  };
-
-  self.sorted_diff_fields = function(){
-    return self.diff_fields()
-      .sort(function(x,y){
-        return x[0] - y[0];
-      });
-  };
-
-  self.field_idxs = function(){
-    return self
-    .sorted_diff_fields()
-    .map(function(el){
-      return el[0];
-    })
-  }
-
-  self.field_signature = function(){
-    return self
-      .sorted_diff_fields()
-      .map(function(el){
-      return el[1];
-    });
-  };
-
-  self.submit = function(){
-    $.ajax('/projects/' + self.project_id, {
-      type: "PATCH",
-      data_type: "json",
-      contentType: "application/json",
-      data: JSON.stringify({
-        op: "configure", 
-        args: {
-          field_signature: self.field_signature()
-        }
-      }),
-      success: function(data){
-        self.read_and_submit_data(self.source_file(), "source");
-      },
-      error: function(data){
-        console.log(data);
-      }
-    })
-  };
-
-  self.send_data_chunk = function(data_type, hash_buffer, on_success) {
-    $.ajax('/projects/' + self.project_id, {
-      type: "PATCH",
-      dataType: "json",
-      contentType: "application/json",
-      data: JSON.stringify({
-        op: "load_data_chunk",
-        args: {
-          data_type: data_type,
-          chunk: hash_buffer
-        }
-      }),
-      success: function(data){
-        on_success();
-      },
-      error: function(data){
-        console.log(data);
-      }
-    });
-  };
-
-  self.read_and_submit_data = function(file, data_type){
+  self.read_and_submit_data = function(file, data_type, unique_id_idx, field_idxs, on_end){
     var lr = new LineReader();
     var line_count = -1;
-
-    var field_idxs = self.field_idxs();
-    var unique_id_idx = self.unique_id_idx();
+ 
     var hash_buffer = [];
 
     lr.on('line', function(line,next){
@@ -156,7 +92,7 @@ function App(project_id){
         hash_buffer.push(hobj);
         
         if( hash_buffer.length >= self.parameters.CHUNK_SIZE){
-          self.send_data_chunk(data_type, hash_buffer, function(){
+          self.send_data_chunk(data_type, hash_buffer, false, function(){
             hash_buffer.length = 0;
             next();
           })
@@ -167,18 +103,45 @@ function App(project_id){
     });
 
     lr.on('end', function(){
-      self.send_data_chunk(data_type, hash_buffer, function(){
+      self.send_data_chunk(data_type, hash_buffer, true, function(){
         //we are done uploading to the server
         //move project to source_uploaded state
         hash_buffer.length = 0;
-        console.log("All the data got sent!!");
+        on_end();
       })
     })
 
     lr.read(file);
   };
 
+  self.send_data_chunk = function(data_type, hash_buffer, is_last_chunk, on_success) {
+    $.ajax(self.patch_url(), {
+      type: "PATCH",
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify({
+        op: "load_data_chunk",
+        args: {
+          data_type: data_type,
+          is_last_chunk: is_last_chunk,
+          chunk: hash_buffer
+        }
+      }),
+      success: function(data){
+        on_success();
+      },
+      error: function(data){
+        console.log(data);
+      }
+    });
+  };
+
+  self.patch_url = function(){
+    return parent.patch_url;
+  }
+
   self.hasFileApi = function() {
     return window.File && window.FileReader && window.Blob
   }
+
 }

@@ -39,13 +39,13 @@ class ProjectUpdater
 
     def load_data_chunk(args={})
       loader = ProjectRowLoader.new(@project, args[:data_type], args[:chunk])
-      
+
       unless loader.valid?
         @errors = loader.errors.full_messages
         return false
       end
 
-      if loader.call
+      if loader.call(args[:is_last_chunk])
         @project
       else
         @errors = ["Could not load data chunk"]
