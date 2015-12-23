@@ -13,6 +13,8 @@ function SourceUploader(parent){
 
   self.target_email = ko.observable();
 
+  self.showRowsUploaded = ko.observable(false);
+
   self.readSourceHeader = function(){
     self.source_header(null);
     self.unique_id_idx(null);
@@ -50,6 +52,8 @@ function SourceUploader(parent){
   };
 
   self.submit = function(){
+    self.showRowsUploaded(true);
+
     $.ajax(parent.patch_url(), {
       type: "PATCH",
       data_type: "json",
@@ -66,10 +70,16 @@ function SourceUploader(parent){
           "source",
           self.unique_id_idx(),
           self.field_idxs(),
-          function(){
-            console.log(parent.state());
+          function(d){
+            if(d && d.uploaded_rows){
+              parent.source_rows_uploaded( parent.source_rows_uploaded() + d.uploaded_rows);
+            }
+          },
+          function(d){
+            if(d && d.uploaded_rows){
+              parent.source_rows_uploaded( parent.source_rows_uploaded() + d.uploaded_rows);
+            }
             parent.state("source_uploaded");
-            console.log(parent.state());
           }
         );
       },

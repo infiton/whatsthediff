@@ -1,6 +1,7 @@
 class Project < ActiveRecord::Base
   include AASM
   obfuscate_id spin: 8675309
+  serialize :field_signature, JSON
 
   belongs_to :user
   belongs_to :target_user, class_name: "User"
@@ -38,10 +39,14 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def source_rows_size
+    source_rows.size
+  end
+
   private
     def set_configs(configs)
       if configs[:field_signature]
-        self.field_signature = ActiveSupport::JSON.encode(configs[:field_signature])
+        self.field_signature = configs[:field_signature]
       end
     end
 

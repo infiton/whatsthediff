@@ -8,6 +8,7 @@ gem 'jquery-rails'
 gem 'bootstrap-sass', '~> 3.3.1'
 gem 'obfuscate_id', '~>0.2.0'
 gem 'aasm', '~>4.5.1'
+gem 'draper', '~>2.1.0'
 
 group :development do
   gem 'pry'

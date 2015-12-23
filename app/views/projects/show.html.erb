@@ -1,9 +1,4 @@
-<%# This is a manifest for frontend templates. This could be refactored to
-    a decorator if there becomes more view specific logic
-    for projects. However for this simple mapping, view logic
-    seems cleanest
-#%>
-<% templates = ["source_uploader", "target_selector"] %>
+<% @project = @project.decorate %>
 
 <div id='app' style="display:none" data-bind="visible: $data">
   <div data-bind="visible: hasFileApi()">
@@ -24,13 +19,13 @@
   <%= javascript_include_tag "lib/md5.js" %>
   <%= javascript_include_tag "knockout/ko-file.js" %>
   <%= javascript_include_tag "knockout/app.js" %>
-  <% templates.each do |template| %>
+  <% @project.templates.each do |template| %>
     <%= javascript_include_tag "knockout/#{template}.js" %>
     <script type="text/html" id="<%= template %>">
       <%= render template %>
     </script>
   <% end %>
   <script>
-    ko.applyBindings(new App(<%= @project.to_param %>, "<%= @project.state %>"), $('.app')[0])
+    ko.applyBindings(new App(<%= @project.knockout %>), $('.app')[0])
   </script>
 <% end %>

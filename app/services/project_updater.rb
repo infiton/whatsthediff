@@ -2,6 +2,7 @@ class ProjectUpdater
 
   def initialize(project)
     @project = project
+    @return_data = {}
   end
 
   def call(op,args)
@@ -15,6 +16,10 @@ class ProjectUpdater
 
   def errors
     @errors
+  end
+
+  def return_data
+    @return_data || {}
   end
 
   private
@@ -45,7 +50,8 @@ class ProjectUpdater
         return false
       end
 
-      if loader.call(args[:is_last_chunk])
+      if uploaded_rows = loader.call(args[:is_last_chunk])
+        @return_data[:uploaded_rows] = uploaded_rows
         @project
       else
         @errors = ["Could not load data chunk"]
@@ -56,7 +62,6 @@ class ProjectUpdater
     def select_target(args={})
       target = User.find_or_create_by(email: args[:target_email]) 
       if target.valid? && @project.select_target(target)
-        binding.pry
         save_or_report
       else
         @errors = target.errors.full_messages

@@ -1,6 +1,6 @@
-function App(project_id, state){
+function App(attrs){
   var self = this;
-  self.project_id = project_id;
+  self.project_id = attrs.project_id;
 
   /*
     App parameter declarations
@@ -13,7 +13,9 @@ function App(project_id, state){
     **************************
   */
 
-  self.state = ko.observable(state);
+  self.state = ko.observable(attrs.state || "new");
+  self.source_rows_uploaded = ko.observable(attrs.source_rows_uploaded || 0);
+  self.field_signature = ko.observable(attrs.field_signature || []);
   
   self.state_app = ko.computed(function(){
     var app;
@@ -34,7 +36,6 @@ function App(project_id, state){
 
     return app;
   });
-
   
   self.readHeader = function(file,target) {
     var header_reader = new LineReader();
@@ -66,7 +67,7 @@ function App(project_id, state){
     header_reader.read(file);
   }
 
-  self.read_and_submit_data = function(file, data_type, unique_id_idx, field_idxs, on_end){
+  self.read_and_submit_data = function(file, data_type, unique_id_idx, field_idxs, on_next, on_end){
     var lr = new LineReader();
     var line_count = -1;
  
@@ -95,7 +96,8 @@ function App(project_id, state){
         hash_buffer.push(hobj);
         
         if( hash_buffer.length >= self.parameters.CHUNK_SIZE){
-          self.send_data_chunk(data_type, hash_buffer, false, function(){
+          self.send_data_chunk(data_type, hash_buffer, false, function(data){
+            on_next(data);
             hash_buffer.length = 0;
             next();
           })
@@ -106,11 +108,11 @@ function App(project_id, state){
     });
 
     lr.on('end', function(){
-      self.send_data_chunk(data_type, hash_buffer, true, function(){
+      self.send_data_chunk(data_type, hash_buffer, true, function(data){
         //we are done uploading to the server
         //move project to source_uploaded state
         hash_buffer.length = 0;
-        on_end();
+        on_end(data);
       })
     })
 
@@ -131,7 +133,7 @@ function App(project_id, state){
         }
       }),
       success: function(data){
-        on_success();
+        on_success(data);
       },
       error: function(data){
         console.log(data);

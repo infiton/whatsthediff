@@ -26,7 +26,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       if @project_updater.call(project_update_op, project_update_args)
         format.json do
-          render status: :ok, json: {}
+          render status: :ok, json: @project_updater.return_data
         end
       else
         format.json do

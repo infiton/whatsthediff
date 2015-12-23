@@ -7,9 +7,9 @@ LineReader = function(options){
     return new LineReader(options);
   }
 
-  var internals = this._internals = {}
   var self = this;
-
+  var internals = self._internals = {};
+  
   internals.reader = new FileReader();
 
   internals.chunkSize = (options && options.chunkSize )
