@@ -52,4 +52,16 @@ class ProjectUpdater
         false
       end
     end
+
+    def select_target(args={})
+      target = User.find_or_create_by(email: args[:target_email]) 
+      if target.valid? && @project.select_target(target)
+        binding.pry
+        save_or_report
+      else
+        @errors = target.errors.full_messages
+        false
+      end
+    end
+        
 end

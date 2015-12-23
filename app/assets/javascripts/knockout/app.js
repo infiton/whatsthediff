@@ -24,6 +24,9 @@ function App(project_id, state){
       case 'source_uploaded':
         app = new TargetSelector(self);
         break;
+      case 'target_selected':
+        app = new TargetUploader(self);
+        break;
       default:
         app = new SourceUploader(self);
         break;
