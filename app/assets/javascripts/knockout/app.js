@@ -33,7 +33,7 @@ function App(attrs){
       case 'target_uploaded':
         app = new ResultsChecker(self);
         break;
-      case 'complete':
+      case 'completed':
         app = new ResultsPresenter(self);
         break;
       default:

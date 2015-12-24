@@ -22,6 +22,7 @@ class Project < ActiveRecord::Base
     state :source_uploaded
     state :target_selected
     state :target_uploaded
+    state :completed
 
     event :configure do
       before do |*args|
@@ -48,6 +49,10 @@ class Project < ActiveRecord::Base
         ProjectDiffJob.perform_later(self)
       end
       transitions from: :target_selected, to: :target_uploaded
+    end
+
+    event :complete do
+      transitions from: :target_uploaded, to: :completed
     end
   end
 

@@ -12,5 +12,7 @@ class ProjectDiffJob < ActiveJob::Base
     #create the duplicate csvs
     ProjectResult.create_duplicates_for(project, :source)
     ProjectResult.create_duplicates_for(project, :target)
+
+    project.complete!
   end
 end
