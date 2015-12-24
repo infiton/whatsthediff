@@ -1,6 +1,7 @@
 class CreateProjects < ActiveRecord::Migration
   def change
     create_table :projects do |t|
+      t.string :slug
       t.string :state
       t.integer :user_id
       t.integer :target_user_id
@@ -10,6 +11,7 @@ class CreateProjects < ActiveRecord::Migration
     end
 
     add_foreign_key :projects, :users
+    add_index :projects, :slug
     add_index :projects, :target_user_id
   end
 end

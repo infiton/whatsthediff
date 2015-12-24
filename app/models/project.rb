@@ -1,16 +1,20 @@
 class Project < ActiveRecord::Base
   include AASM
-  obfuscate_id spin: 8675309
   serialize :field_signature, JSON
 
   belongs_to :user
   belongs_to :target_user, class_name: "User"
+
   has_many :source_rows, -> { source }, class_name: "ProjectRow", dependent: :delete_all
   has_many :target_rows, -> { target }, class_name: "ProjectRow", dependent: :delete_all
+
+  has_many :results, class_name: "ProjectResult", dependent: :delete_all
 
   validates :user, presence: true
   validates :field_signature, presence: true, :if => :configured?
   validates :target_user, presence: true, :if => :target_selected?
+
+  before_create :set_slug
 
   aasm column: :state, whiny_transitions: false do
     state :new, initial: true
@@ -41,10 +45,19 @@ class Project < ActiveRecord::Base
 
     event :finalize_target do
       after do
-        ProjectDiffer.new(self).call
+        ProjectDiffJob.perform_later(self)
       end
       transitions from: :target_selected, to: :target_uploaded
     end
+  end
+
+  #convenience method to keep the source/target semantics consistent
+  def source_user
+    user
+  end
+  #we override to_param to use slug for our restful controller actions
+  def to_param
+    slug
   end
 
   def target_rows_size
@@ -73,5 +86,9 @@ class Project < ActiveRecord::Base
 
     def set_target(target)
       self.target_user = target
+    end
+
+    def set_slug
+      self.slug = SecureRandom.hex
     end
 end

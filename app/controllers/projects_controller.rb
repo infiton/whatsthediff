@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.find(params[:id])
+    @project = Project.find_by_slug(params[:id])
   end
 
   def create
@@ -20,7 +20,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    @project = Project.find(params[:id])
+    @project = Project.find_by_slug(params[:id])
 
     @project_updater = ProjectUpdater.new(@project)
 

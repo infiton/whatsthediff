@@ -13,7 +13,7 @@ class ProjectRow < ActiveRecord::Base
 
 
   DATA_TYPES.each do |data_type|
-    scope data_type, -> { where(data_type: data_type)} 
+    scope data_type, -> { where(data_type: data_type) } 
   end
   #factory method to aid in mass inserts
   #want to create associations to a project

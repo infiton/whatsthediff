@@ -20,7 +20,7 @@ server_config.txt
 
 # Ignore secrets
 /config/database.yml
-/config/mongoid.yml
+/config/secrects.yml
 /config/application.yml
 /config/deploy/shared/*.erb
 

@@ -8,4 +8,13 @@ class User < ActiveRecord::Base
     uniqueness: { case_sensitive: false }
 
   has_many :projects
+
+  def display_name
+    full_name ? full_name : email
+  end
+
+  def full_name
+    return nil unless first_name || last_name
+    [first_name, last_name].compact.join(" ")
+  end
 end
