@@ -1,5 +1,5 @@
 class ProjectRow < ActiveRecord::Base
-  enum data_type: { source: 0, target: 1 }
+  DATA_TYPES = ["source", "target"]
   belongs_to :project
 
   #I explicitly do not want to check for the presence of project
@@ -7,10 +7,14 @@ class ProjectRow < ActiveRecord::Base
   #looped database calls. We settle here for presence of a project_id,
   #if the project doesn't exist, we will have tasks to clean up orphaned data
   validates :project_id, presence: true
-  validates :data_type, inclusion: { :in => ProjectRow.data_types.keys }
+  validates :data_type, inclusion: { :in => DATA_TYPES }
   validates :uid, presence: true
   validates :digest, presence: true
 
+
+  DATA_TYPES.each do |data_type|
+    scope data_type, -> { where(data_type: data_type)} 
+  end
   #factory method to aid in mass inserts
   #want to create associations to a project
   #without adding to the active record association cache

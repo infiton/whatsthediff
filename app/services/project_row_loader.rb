@@ -5,15 +5,13 @@ class ProjectRowLoader
     @project = project
     @data_type = data_type
     @data_chunk = data_chunk
-
-    @rows = build_rows
   end
 
-  def call(is_last_chunk=false)
+  def call
+    @rows = build_rows
+
     return false unless @rows && @rows.any?
-    
     if ActiveRecord::Base.transaction { connection.insert(sql) }
-      @project.finalize_source! if is_last_chunk
       @rows.count
     else
       false

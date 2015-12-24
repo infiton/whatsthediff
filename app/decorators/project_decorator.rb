@@ -9,12 +9,13 @@ class ProjectDecorator < Draper::Decorator
     {
       project_id: to_param,
       state: state,
-      field_signature: field_signature,
-      source_rows_uploaded: source_rows_size
+      field_signature: humanized_fields,
+      source_rows_uploaded: source_rows_size,
+      targets_row_uploaded: target_rows_size
     }.to_json.html_safe
   end
 
   def self.templates
-    ["source_uploader", "target_selector", "target_uploader"]
+    ["source_uploader", "target_selector", "target_uploader", "results_checker", "results_presenter"]
   end
 end

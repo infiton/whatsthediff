@@ -1,25 +1,13 @@
 function SourceUploader(parent){
   var self = this;
-  self.name = "source_uploader";
-  self.parent = parent;
 
-  self.source_file = ko.observable();
-  self.source_header = ko.observable();
-  self.unique_id_idx = ko.observable();
+  Uploader.apply(self,[parent,"source_uploader"]);
+
   self.diff_fields = ko.observableArray();
 
-  self.source_uploaded = ko.observable();
-  self.uploaded_lines = ko.observable();
-
-  self.target_email = ko.observable();
-
-  self.showRowsUploaded = ko.observable(false);
-
   self.readSourceHeader = function(){
-    self.source_header(null);
-    self.unique_id_idx(null);
     self.diff_fields([]);
-    parent.readHeader(self.source_file(), self.source_header);
+    self.readHeader();
   };
 
   self.clear_diff_fields = function(idx){
@@ -65,8 +53,11 @@ function SourceUploader(parent){
         }
       }),
       success: function(data){
-        parent.read_and_submit_data(
-          self.source_file(), 
+        if (data && data.field_signature){
+          parent.field_signature(data.field_signature);
+        }
+        self.read_and_submit_data(
+          self.file(), 
           "source",
           self.unique_id_idx(),
           self.field_idxs(),

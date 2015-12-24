@@ -1,6 +1,7 @@
 class ProjectsController < ApplicationController
 
   def new
+    @project_form = ProjectForm.new
   end
 
   def show
@@ -8,13 +9,13 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    project_form = ProjectForm.new(project_form_params)
+    @project_form = ProjectForm.new(project_form_params)
 
-    if @project = project_form.submit
+    if @project = @project_form.submit
       redirect_to @project
     else
-      flash[project_form.message_level] = project_form.message
-      redirect_to project_form.redirect_to
+      flash.now[@project_form.message_level] = @project_form.message
+      render "new"
     end
   end
 

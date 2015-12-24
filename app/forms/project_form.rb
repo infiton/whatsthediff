@@ -2,8 +2,8 @@ class ProjectForm
   include ActiveModel::Model
 
   attr_accessor :email, :first_name, :last_name, :company, :collect_info
-  attr_reader :message, :message_level, :redirect_to
-
+  attr_reader :message, :message_level
+  
   validates :email, presence: true
   validates :first_name, presence: true
   validates :last_name, presence: true
@@ -26,19 +26,16 @@ class ProjectForm
         else
           @message_level = :danger
           @message = user.errors.full_messages.to_sentence
-          @redirect_to = :back
           return nil
         end
       else
         @message_level = :danger
         @message = errors.full_messages.to_sentence
-        @redirect_to = :back
         return nil
       end
     else
       @message_level = :info
       @message = "Looks like we haven't met before! We'll need some info to get started."
-      @redirect_to = Rails.application.routes.url_helpers.new_project_path
       return nil
     end
   end

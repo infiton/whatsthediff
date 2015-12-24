@@ -1,1 +1,41 @@
-<p>Time to upload the target data now</p>
+<div>
+  <p>Time to upload the target data now</p>
+  <p>Your contact uploaded <span data-bind="text: parent.source_rows_uploaded"></span> rows with the fields:</p>
+  <ul data-bind="foreach: parent.field_signature">
+    <li data-bind="text: $data"></li>
+  </ul>
+</div>
+<div>
+  <input type="file" accept=".csv" data-bind="file: file">
+  <button data-bind="visible: file, click: readHeader">Looky loo</button>
+</div>
+<div data-bind="with: header">
+  <table>
+    <thead>
+      <tr data-bind="foreach: header().row()">
+        <th>
+          <div data-bind="text: $data"></div>
+          <div>
+            <label>Unique id</label>
+            <input type="radio" name="unique_id" data-bind="checkedValue: $index, checked: $parents[1].unique_id_idx"/>
+          </div>
+          <div data-bind="foreach: $parents[1].parent.field_signature">
+            <div>
+              <label data-bind="text: $data"></label>
+              <input type="radio" data-bind="checkedValue: $parentContext.$index, checked: $parents[2].field_for($index)" />
+            </div>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody data-bind="foreach: rows()">
+      <tr data-bind="foreach: $data.row()">
+        <td data-bind="text: $data"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<button data-bind="click: submit">Submit</button>
+<div data-bind="visible: showRowsUploaded">
+  Uploaded: <span data-bind="text: parent.target_rows_uploaded"></span>
+</div>

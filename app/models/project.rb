@@ -17,6 +17,7 @@ class Project < ActiveRecord::Base
     state :configured
     state :source_uploaded
     state :target_selected
+    state :target_uploaded
 
     event :configure do
       before do |*args|
@@ -37,13 +38,33 @@ class Project < ActiveRecord::Base
 
       transitions from: :source_uploaded, to: :target_selected
     end
+
+    event :finalize_target do
+      after do
+        ProjectDiffer.new(self).call
+      end
+      transitions from: :target_selected, to: :target_uploaded
+    end
+  end
+
+  def target_rows_size
+    rows_size(:target)
   end
 
   def source_rows_size
-    source_rows.size
+    rows_size(:source)
+  end  
+
+  def humanized_fields
+    return [] unless field_signature.respond_to?(:map)
+    field_signature.map(&:humanize)
   end
 
   private
+    def rows_size(type)
+      send("#{type}_rows").size
+    end
+
     def set_configs(configs)
       if configs[:field_signature]
         self.field_signature = configs[:field_signature]

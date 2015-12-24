@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20151219143650) do
 
   create_table "project_rows", force: :cascade do |t|
     t.integer  "project_id", limit: 4
-    t.integer  "data_type",  limit: 4
+    t.string   "data_type",  limit: 255
     t.string   "uid",        limit: 255
     t.string   "digest",     limit: 255
     t.datetime "created_at",             null: false

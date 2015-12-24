@@ -19,6 +19,7 @@
   <%= javascript_include_tag "lib/md5.js" %>
   <%= javascript_include_tag "knockout/ko-file.js" %>
   <%= javascript_include_tag "knockout/app.js" %>
+  <%= javascript_include_tag "knockout/uploader.js" %>
   <% @project.templates.each do |template| %>
     <%= javascript_include_tag "knockout/#{template}.js" %>
     <script type="text/html" id="<%= template %>">

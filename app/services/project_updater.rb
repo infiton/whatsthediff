@@ -35,6 +35,7 @@ class ProjectUpdater
 
     def configure(args={})
       if @project.configure(args)
+        @return_data[:field_signature] = @project.humanized_fields
         save_or_report
       else
         @errors = ["Could not configure project"]
@@ -50,7 +51,11 @@ class ProjectUpdater
         return false
       end
 
-      if uploaded_rows = loader.call(args[:is_last_chunk])
+      if uploaded_rows = loader.call
+        
+        @project.finalize_source! if args[:is_last_chunk] && args[:data_type] == "source"
+        @project.finalize_target! if args[:is_last_chunk] && args[:data_type] == "target"
+
         @return_data[:uploaded_rows] = uploaded_rows
         @project
       else

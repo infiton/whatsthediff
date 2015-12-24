@@ -5,7 +5,7 @@ class CreateProjectRows < ActiveRecord::Migration
   def change
     create_table :project_rows do |t|
       t.integer :project_id
-      t.integer :data_type
+      t.string :data_type
       t.string :uid
       t.string :digest
 

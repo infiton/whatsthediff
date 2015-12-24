@@ -1,8 +1,8 @@
 <div>
-  <input type="file" accept=".csv" data-bind="file: source_file">
-  <button data-bind="visible: source_file, click: readSourceHeader">Looky loo</button>
+  <input type="file" accept=".csv" data-bind="file: file">
+  <button data-bind="visible: file, click: readSourceHeader">Looky loo</button>
 </div>
-<div data-bind="with: source_header">
+<div data-bind="with: header">
   <table>
     <thead>
       <tr data-bind="foreach: header().row()">
