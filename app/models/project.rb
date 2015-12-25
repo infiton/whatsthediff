@@ -79,7 +79,7 @@ class Project < ActiveRecord::Base
   end
 
   def result_files
-    results.map{|r| [r.result_type,r.filename]}.to_h
+    results.map{|r| [r.result_type,r.id]}.to_h
   end
 
   private

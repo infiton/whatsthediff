@@ -8,6 +8,6 @@ function ResultsPresenter(parent){
   }
 
   self.path_to = function(type){
-    return self.parent.get_url() + '/project_results?result_type=' + type;
+    return self.parent.get_url() + '/project_results/' + self.parent.result_files()[type];
   }
 }

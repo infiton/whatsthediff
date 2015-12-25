@@ -10,6 +10,14 @@ class ProjectResult < ActiveRecord::Base
     scope result_type, -> { where(result_type: result_type) } 
   end
 
+  def file_path
+    ProjectResult.file_path(filename)
+  end
+
+  def file_exists?
+    File.exists?(file_path)
+  end
+
   class << self
     def create_overlap_for(project)
       source_user = project.try("source_user")
@@ -69,6 +77,10 @@ class ProjectResult < ActiveRecord::Base
       create_result_for(project, result_type: "#{type}_duplicates", filename: filename)
     end
 
+    def file_path(filename)
+      "#{APP_CONFIG[:results_path]}/#{filename}"
+    end
+
     private
 
       def create_result_for(project, attrs={})
@@ -89,10 +101,6 @@ class ProjectResult < ActiveRecord::Base
         end
 
         filename
-      end
-
-      def file_path(filename)
-        "#{APP_CONFIG[:results_path]}/#{filename}"
       end
 
       def column_header(user)
