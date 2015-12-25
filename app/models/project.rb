@@ -78,6 +78,10 @@ class Project < ActiveRecord::Base
     field_signature.map(&:humanize)
   end
 
+  def result_files
+    results.map{|r| [r.result_type,r.filename]}.to_h
+  end
+
   private
     def rows_size(type)
       send("#{type}_rows").size

@@ -6,9 +6,10 @@ function App(attrs){
     App parameter declarations
     **************************
   */
-  self.parameters = {}
-  self.parameters.HEADER_SIZE = 5
+  self.parameters = {};
+  self.parameters.HEADER_SIZE = 5;
   self.parameters.CHUNK_SIZE = 100;
+  self.parameters.PING_RATE = 5000;
   /*
     **************************
   */
@@ -17,6 +18,7 @@ function App(attrs){
   self.source_rows_uploaded = ko.observable(attrs.source_rows_uploaded || 0);
   self.target_rows_uploaded = ko.observable(attrs.target_rows_uploaded || 0);
   self.field_signature = ko.observable(attrs.field_signature || []);
+  self.result_files = ko.observable(attrs.result_files || []);
   
   self.state_app = ko.computed(function(){
     var app;
@@ -46,6 +48,10 @@ function App(attrs){
   
   self.patch_url = function(){
     return "/projects/" + self.project_id;
+  }
+
+  self.get_url = function(){
+    return self.patch_url();
   }
 
   self.hasFileApi = function() {

@@ -6,6 +6,25 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find_by_slug(params[:id])
+    @project.decorate
+    respond_to do |format|
+      if @project
+        @project = @project.decorate
+        format.html #show.html.erb
+        format.json do
+          render status: :ok, json: @project.to_hash
+        end
+      else
+        format.html do
+          flash[:danger] = "Could not find that project"
+          redirect_to :back and return
+        end
+
+        format.json do
+          render status: 404, json: { errors: ["project not found"] }
+        end
+      end
+    end
   end
 
   def create
