@@ -20,6 +20,18 @@ function App(attrs){
   self.field_signature = ko.observable(attrs.field_signature || []);
   self.result_files = ko.observable(attrs.result_files || []);
   
+  self.patch_url = function(){
+    return "/projects/" + self.project_id;
+  }
+
+  self.get_url = function(){
+    return self.patch_url();
+  }
+
+  self.hasFileApi = function() {
+    return window.File && window.FileReader && window.Blob
+  }
+  
   self.state_app = ko.computed(function(){
     var app;
     switch(self.state()){
@@ -45,17 +57,5 @@ function App(attrs){
 
     return app;
   });
-  
-  self.patch_url = function(){
-    return "/projects/" + self.project_id;
-  }
-
-  self.get_url = function(){
-    return self.patch_url();
-  }
-
-  self.hasFileApi = function() {
-    return window.File && window.FileReader && window.Blob
-  }
 
 }

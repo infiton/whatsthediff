@@ -1,1 +1,16 @@
 <p>This is the results presenter.</p>
+<div data-bind="visible: has_file('overlap')">
+  <p>Here is the overlap file: <a data-bind="attr: {href: path_to('overlap')}">csv</a></p>
+</div> 
+<div data-bind="visible: has_file('source_uniques')">
+  <p>Here is the source_uniques file: <a data-bind="attr: {href: path_to('source_uniques')}">csv</a></p>
+</div> 
+<div data-bind="visible: has_file('target_uniques')">
+  <p>Here is the target_uniques file: <a data-bind="attr: {href: path_to('target_uniques')}">csv</a></p>
+</div> 
+<div data-bind="visible: has_file('source_duplicates')">
+  <p>Here is the source_duplicates file: <a data-bind="attr: {href: path_to('source_duplicates')}">csv</a></p>
+</div> 
+<div data-bind="visible: has_file('target_duplicates')">
+  <p>Here is the target_duplicates file: <a data-bind="attr: {href: path_to('target_duplicates')}">csv</a></p>
+</div> 
